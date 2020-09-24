@@ -1,0 +1,25 @@
+{
+  "name": "surerloki/router",
+  "description": "Router is a object-oriented library to handle HTTP requests.",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "AdrianoLima19",
+      "email": "surerloki3379@gmail.com"
+    }
+  ],
+  "keywords": [
+    "Router",
+    "Route",
+    "Routes"
+  ],
+  "require": {
+    "php": "^7.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "SurerLoki\\Router\\": "src/"
+    }
+  }
+}
