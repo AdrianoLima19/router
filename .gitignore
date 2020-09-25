@@ -1,4 +1,4 @@
 readme
-/vendor/
 composer.lock
-tests/test.php
+.htaccess
+test/*
