@@ -4,50 +4,27 @@ namespace SurerLoki\Router;
 
 class Request
 {
-    protected $data;
     protected $httpMethod;
     protected $url;
     protected $requestRoute;
+    private $requestBody;
 
+    /**
+     * @param string $url
+     */
     public function __construct($url)
     {
-        // ! Create a filter for the Input GET
         $this->httpMethod = $_SERVER['REQUEST_METHOD'];
         $this->rootURL = rtrim($url, '/');
-        $this->requestRoute = isset($_GET['route']) ? rtrim($_GET['route'], '/') : $this->getURI($this->rootURL, $_SERVER['REQUEST_URI']);
-
-        // var_dump([
-        //     '$_GET' => $requestRoute,
-        //     $_SERVER['REQUEST_URI'],
-        //     $_SERVER['REQUEST_METHOD'],
-        // ]);
-        // die;
-
-        // if ($_SERVER['REQUEST_METHOD'] == "GET") {
-        //     return "GET METHOD";
-        // }
-        // if ($_SERVER['REQUEST_METHOD'] == "POST") {
-        //     return "GET METHOD";
-        // }
-        // if ($_SERVER['REQUEST_METHOD'] == "GET") {
-        //     return "GET METHOD";
-        // }
-
-
-
-        // var_dump([
-        //     "GET" => $_GET,
-        //     "POST" => $_POST,
-        //     // $_SERVER['CONTENT_LENGTH'],
-        //     // "PUT,PATCH,DELETE" => $fgc = file_get_contents('php://input'),
-        //     "METHOD" => $_SERVER['REQUEST_METHOD'],
-        //     "PUT,PATCH,DELETE" => $fgc = file_get_contents('php://input', false, null, 0, $_SERVER['CONTENT_LENGTH']),
-        //     parse_str($fgc, $putPatch),
-        //     // parse_str(file_get_contents('php://input', false, null, 0, $_SERVER['CONTENT_LENGTH']), $putPatch)
-        // ]);
-        // die;
+        $this->requestRoute = isset($_GET['route']) ? rtrim(filter_input(INPUT_GET, "route", FILTER_DEFAULT), '/') : $this->getURI($this->rootURL, $_SERVER['REQUEST_URI']);
+        $this->requestBody = filter_input_array(INPUT_POST, FILTER_DEFAULT) ?? filter_var_array((array) json_decode(file_get_contents('php://input', false, null, 0, $_SERVER['CONTENT_LENGTH'])), FILTER_DEFAULT) ?? null;
     }
 
+    /**
+     * @param string $url
+     * @param string|null $get
+     * @return string|null
+     */
     private function getURI($url, $get)
     {
         $base = explode('/', $url);
@@ -59,56 +36,45 @@ class Request
         return ltrim(rtrim($uri, '/'), '/');
     }
 
+    /**
+     * @param string $method
+     * @param array $data
+     * @return array|null
+     */
     protected function parseData($method, $data)
     {
         /**
          * https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_message
          */
-        var_dump([
-            "METHOD" => $method
-        ]);
+
+        /**
+         * TODO ADD $this->httpMethod verify
+         */
+
         if ($method == 'GET') {
-            if (!empty($_SERVER['CONTENT_LENGTH'])) {
-                $return['url'] = $data;
-                $return['body'] = (array) json_decode(file_get_contents('php://input', false, null, 0, $_SERVER['CONTENT_LENGTH']));
-                return $return;
+            if (!empty($this->requestBody)) {
+                return array_merge($data, $this->requestBody);
             } else {
                 return $data;
             }
         }
 
-        $post = filter_input_array(INPUT_POST, FILTER_DEFAULT);
-
-        if (!empty($post['_method']) && in_array($post['_method'], ["HEAD", "PUT", "OPTIONS", "PATCH", "DELETE"])) {
-
-            /** if PUT|PATCH don't have a body return a error */
-            $this->httpMethod = $post['_method'];
-            $body = $post;
-            unset($body['_method']);
-        }
         if ($method == 'POST') {
-            if ($post) {
-                $return['url'] = $data;
-                $return['body'] = $post;
-                return $return;
-            } elseif (!empty($_SERVER['CONTENT_LENGTH'])) {
-                $return['url'] = $data;
-                $return['body'] = (array) json_decode(file_get_contents('php://input', false, null, 0, $_SERVER['CONTENT_LENGTH']));
-                return $return;
-            } else {
-                return $data;
+            if (!empty($this->requestBody['_method'])) {
+                $this->httpMethod = $this->requestBody['_method'];
+                $withoutMethod = $this->requestBody;
+                unset($withoutMethod['_method']);
+                // ? return error 400
+                return (!empty($withoutMethod)) ? array_merge($data, $withoutMethod) : $data;
             }
+
+            if (!empty($this->requestBody)) {
+                return array_merge($data, $this->requestBody);
+            }
+            // ? return error 400
+            return $data;
         }
 
-        var_dump([
-            "POST" => $body
-        ]);
-        die;
-
-
-
-        $body = !empty($_SERVER['CONTENT_LENGTH']) ? file_get_contents('php://input', false, null, 0, $_SERVER['CONTENT_LENGTH']) : null;
-
-        var_dump([$body]);
+        return (!empty($this->requestBody)) ? array_merge($data, $this->requestBody) : $data;
     }
 }

@@ -2,6 +2,11 @@
 
 Router is a object-oriented library to handle HTTP requests.
 
+## Features
+
+- Can be used with all HTTP methods
+- Dynamic routing with named route parameters
+
 ## Requirements
 
 <ul style="list-style:circle;padding-left:1.5rem;margin-left:0;">
@@ -11,4 +16,4 @@ Router is a object-oriented library to handle HTTP requests.
 
 #### License
 
-This project is under MIT License (MIT). Please see [License File](https://github.com/AdrianoLima19/router/blob/master/LICENSE) for more information.
+This project is under MIT License. Please see the [License File](https://github.com/AdrianoLima19/router/blob/master/LICENSE) for more information.

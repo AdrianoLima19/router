@@ -1,5 +1,5 @@
 readme
 composer.lock
 .htaccess
-test/*
-/vendor/
+test
+vendor
