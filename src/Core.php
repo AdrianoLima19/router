@@ -10,6 +10,7 @@ trait Core
     private $namespace;
     private $group;
     private $nested;
+    // TODO add a const array with all methods permited
 
     /**
      * @param string $method
@@ -18,6 +19,7 @@ trait Core
      */
     protected function newRoute($method, $route, $handler)
     {
+        // TODO merge group . / . $route
         $requestRoute = explode("/", $this->requestRoute);
         $urlData = array_values(array_diff($requestRoute, explode("/", rtrim($route, '/'))));
 
@@ -32,7 +34,8 @@ trait Core
 
         $route = (!empty($this->group)) ? "/{$this->group}{$route}" : $route;
         var_dump([
-            "METHOD" => $this->httpMethod,
+            "HTTP_METHOD" => $this->httpMethod,
+            "METHOD" => $method,
             "NAMESPACE" => $this->namespace . '\\' . $handler,
             "GROUP" => $route,
             // "ROUTE" => $route,

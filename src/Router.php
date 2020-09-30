@@ -26,7 +26,11 @@ class Router extends Request
      */
     public function all($route, $handler)
     {
-        $this->error = self::NOT_IMPLEMENTED;
+        $this->newRoute('GET', $route, $handler);
+        $this->newRoute('POST', $route, $handler);
+        $this->newRoute('PUT', $route, $handler);
+        $this->newRoute('PATCH', $route, $handler);
+        $this->newRoute('DELETE', $route, $handler);
     }
 
     /**
@@ -36,7 +40,15 @@ class Router extends Request
      */
     public function route($method, $route, $handler)
     {
-        $this->error = self::NOT_IMPLEMENTED;
+        $method = strtoupper($method);
+
+        if (is_string($method)) {
+            $this->newRoute($method, $route, $handler);
+        } else {
+            foreach ($method as $key) {
+                $this->newRoute($key, $route, $handler);
+            }
+        }
     }
 
     /**
