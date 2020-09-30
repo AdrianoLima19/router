@@ -19,7 +19,8 @@ trait Core
      */
     protected function newRoute($method, $route, $handler)
     {
-        // TODO merge group . / . $route
+        $route = trim($route, '/');
+        $route = (!empty($this->group)) ? "/{$this->group}/{$route}" : "/{$route}";
         $requestRoute = explode("/", $this->requestRoute);
         $urlData = array_values(array_diff($requestRoute, explode("/", rtrim($route, '/'))));
 
@@ -32,13 +33,14 @@ trait Core
 
         $this->data = $this->parseData($method, ($data) ?? []);
 
-        $route = (!empty($this->group)) ? "/{$this->group}{$route}" : $route;
+        // $params
+
         var_dump([
-            "HTTP_METHOD" => $this->httpMethod,
-            "METHOD" => $method,
-            "NAMESPACE" => $this->namespace . '\\' . $handler,
-            "GROUP" => $route,
-            // "ROUTE" => $route,
+            // "HTTP_METHOD" => $this->httpMethod,
+            // "METHOD" => $method,
+            // "NAMESPACE" => $this->namespace . '\\' . $handler,
+            // "ROUTES" => $this->routes,
+            "ROUTE" => $route,
             // "DATA" => $this->data,
             "ERROR" => $this->error,
         ]);
@@ -69,16 +71,21 @@ trait Core
     public function group($group, $callback = null)
     {
         $group = (trim($group, '/') != '/' ? trim($group, '/') : '');
+
         if (!$callback) {
             $this->group = $group;
             return;
         }
 
-        // TODO add a nested option to group
-
-        $keepGroup = $this->group;
-        $this->group = $group;
-        $callback($this);
-        $this->group = $keepGroup;
+        if (empty($this->nested)) {
+            $this->nested = $this->group;
+            $this->group = $group;
+            $callback($this);
+            $this->group = $this->nested;
+            $this->nested = null;
+        } else {
+            $this->group .= "/{$group}";
+            $callback($this);
+        }
     }
 }
