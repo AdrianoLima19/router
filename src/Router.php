@@ -40,13 +40,11 @@ class Router extends Request
      */
     public function route($method, $route, $handler)
     {
-        $method = strtoupper($method);
-
         if (is_string($method)) {
-            $this->newRoute($method, $route, $handler);
+            $this->newRoute(strtoupper($method), $route, $handler);
         } else {
             foreach ($method as $key) {
-                $this->newRoute($key, $route, $handler);
+                $this->newRoute(strtoupper($key), $route, $handler);
             }
         }
     }
