@@ -16,8 +16,13 @@ class Request
     {
         $this->httpMethod = $_SERVER['REQUEST_METHOD'];
         $this->rootURL = rtrim($url, '/');
-        $this->requestRoute = isset($_GET['route']) ? rtrim(filter_input(INPUT_GET, "route", FILTER_DEFAULT), '/') : $this->getURI($this->rootURL, $_SERVER['REQUEST_URI']);
-        $this->requestBody = filter_input_array(INPUT_POST, FILTER_DEFAULT) ?? filter_var_array((array) json_decode(file_get_contents('php://input', false, null, 0, $_SERVER['CONTENT_LENGTH'])), FILTER_DEFAULT) ?? null;
+        $this->requestRoute = isset($_GET['route']) ?
+            rtrim(filter_input(INPUT_GET, "route", FILTER_DEFAULT), '/') : $this->getURI($this->rootURL, $_SERVER['REQUEST_URI']);
+
+        $data = (!empty($_SERVER['CONTENT_LENGTH'])) ?
+            filter_var_array((array) json_decode(file_get_contents('php://input', false, null, 0, $_SERVER['CONTENT_LENGTH'])), FILTER_DEFAULT) : null;
+
+        $this->requestBody = filter_input_array(INPUT_POST, FILTER_DEFAULT) ?? $data ?? null;
     }
 
     /**
