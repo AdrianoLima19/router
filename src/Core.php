@@ -2,8 +2,10 @@
 
 namespace SurerLoki\Router;
 
-trait Core
+class Core extends Dispatch
 {
+    use Request;
+
     protected $data;
     protected $error;
     protected $routes;
@@ -11,6 +13,14 @@ trait Core
     private $group;
     private $nested;
     // TODO add a const array with all methods permited
+
+    /**
+     * @param string $url
+     */
+    public function __construct($url)
+    {
+        $this->request($url);
+    }
 
     /**
      * @param string $method
@@ -33,17 +43,14 @@ trait Core
 
         $this->data = $this->parseData($method, ($data) ?? []);
 
-        // $params
-
-        var_dump([
-            // "HTTP_METHOD" => $this->httpMethod,
-            // "METHOD" => $method,
-            // "NAMESPACE" => $this->namespace . '\\' . $handler,
-            // "ROUTES" => $this->routes,
-            "ROUTE" => $route,
-            // "DATA" => $this->data,
-            "ERROR" => $this->error,
-        ]);
+        $params = preg_replace('~{([^}]*)}~', "([^/]+)", $route);
+        $this->routes[$method][$params] = [
+            "route" => $route,
+            "method" => $method,
+            "handler" => $this->handler($handler, $this->namespace),
+            "action" => $this->action($handler),
+            "data" => $this->data
+        ];
     }
 
     /**
@@ -87,5 +94,24 @@ trait Core
             $this->group .= "/{$group}";
             $callback($this);
         }
+    }
+
+    /**
+     * @param string|callable $handler
+     * @return string|null
+     */
+    private function action($handler)
+    {
+        return is_string($handler) ? explode(":", $handler)[1] : null;
+    }
+
+    /**
+     * @param string|callable $handler
+     * @param string $namespace
+     * @return string|callable
+     */
+    private function handler($handler, $namespace)
+    {
+        return is_string($handler) ? "{$namespace}\\" . explode(":", $handler)[0] : $handler;
     }
 }
