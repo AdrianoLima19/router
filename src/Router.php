@@ -2,11 +2,8 @@
 
 namespace SurerLoki\Router;
 
-class Router extends Request
+class Router extends Core
 {
-    use Core;
-    // TODO use Dispatch;
-
     public const BAD_REQUEST = 400;
     public const NOT_FOUND = 404;
     public const METHOD_NOT_ALLOWED = 405;
@@ -43,9 +40,9 @@ class Router extends Request
         if (is_string($method)) {
             $this->newRoute(strtoupper($method), $route, $handler);
         } else {
-            foreach ($method as $key) {
-                $this->newRoute(strtoupper($key), $route, $handler);
-            }
+            array_walk($method, function ($self) use ($route, $handler) {
+                $this->newRoute(strtoupper($self), $route, $handler);
+            });
         }
     }
 

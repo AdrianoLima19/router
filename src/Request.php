@@ -2,17 +2,17 @@
 
 namespace SurerLoki\Router;
 
-class Request
+trait Request
 {
     protected $httpMethod;
-    protected $url;
+    protected $rootURL;
     protected $requestRoute;
     private $requestBody;
 
     /**
      * @param string $url
      */
-    public function __construct($url)
+    public function request($url)
     {
         $this->httpMethod = $_SERVER['REQUEST_METHOD'];
         $this->rootURL = rtrim($url, '/');
@@ -22,7 +22,7 @@ class Request
         $data = (!empty($_SERVER['CONTENT_LENGTH'])) ?
             filter_var_array((array) json_decode(file_get_contents('php://input', false, null, 0, $_SERVER['CONTENT_LENGTH'])), FILTER_DEFAULT) : null;
 
-        $this->requestBody = filter_input_array(INPUT_POST, FILTER_DEFAULT) ?? $data ?? null;
+        $this->requestBody = filter_input_array(INPUT_POST, FILTER_DEFAULT) ?? $data;
     }
 
     /**
