@@ -12,7 +12,8 @@ class Core extends Dispatch
     private $namespace;
     private $group;
     private $nested;
-    // TODO add a const array with all methods permited
+    protected $middlewares;
+    private $middlewareRoute;
 
     /**
      * @param string $url
@@ -29,7 +30,7 @@ class Core extends Dispatch
      */
     protected function newRoute($method, $route, $handler)
     {
-        $route = trim($route, '/');
+        $route = (trim($route, '/') != '/') ? trim($route, '/') : "";
         $route = (!empty($this->group)) ? "/{$this->group}/{$route}" : "/{$route}";
         $requestRoute = explode("/", $this->requestRoute);
         $urlData = array_values(array_diff($requestRoute, explode("/", rtrim($route, '/'))));
@@ -40,17 +41,25 @@ class Core extends Dispatch
         for ($key = 0; $key < count($keys); $key++) {
             $data[$keys[$key][1]] = ($urlData[$key]) ?? null;
         }
+        $data = $data ?? [];
+        $pregRoute = preg_replace('~{([^}]*)}~', "([^/]+)", $route);
 
-        $this->data = $this->parseData($method, ($data) ?? []);
-
-        $params = preg_replace('~{([^}]*)}~', "([^/]+)", $route);
-        $this->routes[$method][$params] = [
-            "route" => $route,
+        $this->middlewareRoute = [
             "method" => $method,
-            "handler" => $this->handler($handler, $this->namespace),
-            "action" => $this->action($handler),
-            "data" => $this->data
+            "route" => $route,
+            "pregRoute" => $pregRoute
         ];
+
+        array_map(function ($self) use ($data, $pregRoute, $route, $handler) {
+            $this->data = $this->parseData($self, $data);
+            $this->routes[$self][$pregRoute] = [
+                "route" => $route,
+                "method" => $self,
+                "handler" => $this->handler($handler, $this->namespace),
+                "action" => $this->action($handler),
+                "data" => $this->data
+            ];
+        }, is_array($method) ? $method : (array) $method);
     }
 
     /**
@@ -113,5 +122,27 @@ class Core extends Dispatch
     private function handler($handler, $namespace)
     {
         return is_string($handler) ? "{$namespace}\\" . explode(":", $handler)[0] : $handler;
+    }
+
+    /**
+     * @param string|callable $handler
+     */
+    public function middleware($handler)
+    {
+        array_map(function ($self) use ($handler) {
+
+            if (is_string($handler)) {
+                $handler = explode(":", $handler);
+                $action = (!empty($handler[1])) ? $handler[1] : "handler";
+                $handler = $handler[0];
+            }
+
+            $this->middlewares[$self][$this->middlewareRoute['pregRoute']] = [
+                "route" => $this->middlewareRoute['route'],
+                "method" => $self,
+                "handler" => $handler,
+                "action" => isset($action) ? $action : null,
+            ];
+        }, is_array($this->middlewareRoute['method']) ? $this->middlewareRoute['method'] : (array) $this->middlewareRoute['method']);
     }
 }

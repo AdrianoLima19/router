@@ -4,18 +4,22 @@ namespace SurerLoki\Router;
 
 abstract class Dispatch
 {
+    // TODO refactor dispath
     /**
      * @return bool
      */
     public function run()
     {
-        if (empty($this->routes) || empty($this->routes[$this->httpMethod])) {
+        if (empty($this->routes)) {
             $this->error = Router::NOT_IMPLEMENTED;
             return false;
         }
-
+        if (empty($this->routes[$this->httpMethod])) {
+            $this->error = Router::METHOD_NOT_ALLOWED;
+            return false;
+        }
         foreach ($this->routes[$this->httpMethod] as $route => $params) {
-            if (preg_match("~^" . ltrim($route, '/') . "$~", $this->requestRoute)) {
+            if (preg_match("~^" . trim($route, '/') . "$~", $this->requestRoute)) {
                 $runRoute = $params;
             }
         }
@@ -47,16 +51,24 @@ abstract class Dispatch
         $this->error = Router::NOT_FOUND;
         return false;
     }
-
+    // TODO Redirect
     public function redirect()
     {
     }
 
     /**
-     * @return null|int
+     * @return int|null
      */
     public function error()
     {
         return $this->error;
+    }
+
+    /**
+     * @return string|array|null
+     */
+    public function routes()
+    {
+        return $this->routes['GET'];
     }
 }

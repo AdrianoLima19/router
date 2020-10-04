@@ -4,3 +4,4 @@ composer.lock
 test
 vendor
 src/Web.php
+src/Middleware.php
