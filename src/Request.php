@@ -46,15 +46,13 @@ trait Request
      * @param array $data
      * @return array|null
      */
-    protected function parseData($method, $data)
+    protected function parseData($data)
     {
         /**
          * https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_message
          */
 
-        /**
-         * TODO ADD $this->httpMethod verify
-         */
+        $method = $this->httpMethod;
 
         if ($method == 'GET') {
             if (!empty($this->requestBody)) {

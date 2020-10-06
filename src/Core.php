@@ -51,7 +51,7 @@ class Core extends Dispatch
         ];
 
         array_map(function ($self) use ($data, $pregRoute, $route, $handler) {
-            $this->data = $this->parseData($self, $data);
+            $this->data = $this->parseData($data);
             $this->routes[$self][$pregRoute] = [
                 "route" => $route,
                 "method" => $self,
@@ -78,7 +78,6 @@ class Core extends Dispatch
         $callback($this);
         $this->namespace = $keepNamespace;
     }
-
 
     /**
      * @param string $group

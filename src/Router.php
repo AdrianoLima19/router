@@ -37,8 +37,9 @@ class Router extends Core
      */
     public function route($method, $route, $handler): Core
     {
-        $method = is_string($method) ? (array) $method : $method;
-        $method = array_map('strtoupper', $method);
+        $method = array_map('strtoupper', is_string($method) ? (array) $method : $method);
+        // $method = is_string($method) ? (array) $method : $method;
+        // $method = array_map('strtoupper', $method);
         array_map(function ($self) use ($route, $handler) {
             if (!in_array($self, self::METHODS)) {
                 http_response_code(self::METHOD_NOT_ALLOWED);
