@@ -25,13 +25,13 @@ Router is a object-oriented library to handle HTTP requests.
 Installation is available via Composer:
 
 ```json
-"surerloki/router": "^0.1.1"
+"surerloki/router": "^0.2.1"
 ```
 
 or run
 
 ```sh
-composer require surerloki/router ^0.1.1
+composer require surerloki/router ^0.2.1
 ```
 
 ### Usage
