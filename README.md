@@ -9,7 +9,9 @@ Router is a object-oriented library to handle HTTP requests.
 ## Features
 
 - Can be used with all HTTP methods
-- Dynamic routing with named route parameters
+- [Single requests methods as `get()`, `post()`, `put()`, …](#static-route)
+- [Static Route Patterns](#Static-Route)
+- [Dynamic routing with named route parameters](#dynamic-route)
 
 ## Requirements
 
@@ -23,13 +25,13 @@ Router is a object-oriented library to handle HTTP requests.
 Installation is available via Composer:
 
 ```json
-"surerloki/router": "^0.1.0"
+"surerloki/router": "^0.1.1"
 ```
 
 or run
 
 ```sh
-composer require surerloki/router ^0.1.0
+composer require surerloki/router ^0.1.1
 ```
 
 ### Usage

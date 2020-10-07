@@ -24,7 +24,7 @@ class Core extends Dispatch
     }
 
     /**
-     * @param string $method
+     * @param string|array $method
      * @param string $route
      * @param string|callable $handler
      */
@@ -35,7 +35,6 @@ class Core extends Dispatch
         $requestRoute = explode("/", $this->requestRoute);
         $urlData = array_values(array_diff($requestRoute, explode("/", rtrim($route, '/'))));
 
-        // ? if in future updates url accept regex parameters verify here
         preg_match_all('/\{\s*([a-zA-Z0-9_-]*)\}/', $route, $keys, PREG_SET_ORDER);
 
         for ($key = 0; $key < count($keys); $key++) {

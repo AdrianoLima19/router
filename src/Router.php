@@ -2,7 +2,7 @@
 
 namespace SurerLoki\Router;
 
-class Router extends Core
+final class Router extends Core
 {
     public const METHODS = ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'];
     public const BAD_REQUEST = 400;
@@ -38,8 +38,7 @@ class Router extends Core
     public function route($method, $route, $handler): Core
     {
         $method = array_map('strtoupper', is_string($method) ? (array) $method : $method);
-        // $method = is_string($method) ? (array) $method : $method;
-        // $method = array_map('strtoupper', $method);
+
         array_map(function ($self) use ($route, $handler) {
             if (!in_array($self, self::METHODS)) {
                 http_response_code(self::METHOD_NOT_ALLOWED);

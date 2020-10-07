@@ -17,7 +17,7 @@ trait Request
         $this->httpMethod = $_SERVER['REQUEST_METHOD'];
         $this->rootURL = rtrim($url, '/');
         $this->requestRoute = isset($_GET['route']) ?
-            rtrim(filter_input(INPUT_GET, "route", FILTER_DEFAULT), '/') : $this->getURI($this->rootURL, $_SERVER['REQUEST_URI']);
+            rtrim(filter_input(INPUT_GET, "route", FILTER_DEFAULT), '/') : $this->setURI($this->rootURL, $_SERVER['REQUEST_URI']);
 
         $data = (!empty($_SERVER['CONTENT_LENGTH'])) ?
             filter_var_array((array) json_decode(file_get_contents('php://input', false, null, 0, $_SERVER['CONTENT_LENGTH'])), FILTER_DEFAULT) : null;
@@ -30,7 +30,7 @@ trait Request
      * @param string|null $get
      * @return string|null
      */
-    private function getURI($url, $get)
+    private function setURI($url, $get)
     {
         $base = explode('/', $url);
         $get = ltrim($get, '/');
@@ -41,6 +41,11 @@ trait Request
         return ltrim(rtrim($uri, '/'), '/');
     }
 
+    public function getUri()
+    {
+        return $this->requestRoute;
+    }
+
     /**
      * @param string $method
      * @param array $data
@@ -48,10 +53,6 @@ trait Request
      */
     protected function parseData($data)
     {
-        /**
-         * https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_message
-         */
-
         $method = $this->httpMethod;
 
         if ($method == 'GET') {
