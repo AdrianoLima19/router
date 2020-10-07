@@ -32,8 +32,8 @@ class Core extends Dispatch
     {
         $route = (trim($route, '/') != '/') ? trim($route, '/') : "";
         $route = (!empty($this->group)) ? "/{$this->group}/{$route}" : "/{$route}";
-        $requestRoute = explode("/", $this->requestRoute);
-        $urlData = array_values(array_diff($requestRoute, explode("/", rtrim($route, '/'))));
+        $request = explode("/", $this->requestRoute);
+        $urlData = array_values(array_diff($request, explode("/", rtrim($route, '/'))));
 
         preg_match_all('/\{\s*([a-zA-Z0-9_-]*)\}/', $route, $keys, PREG_SET_ORDER);
 

@@ -80,9 +80,16 @@ abstract class Dispatch
         $this->error = Router::NOT_FOUND;
         return;
     }
-    // TODO Redirect
-    public function redirect()
+
+    /**
+     * @param string $route
+     */
+    public function redirect($route)
     {
+        $router = trim($route, '/');
+
+        header("Location: {$this->rootURL}/{$router}");
+        exit;
     }
 
     /**
