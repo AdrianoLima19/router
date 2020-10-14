@@ -2,83 +2,123 @@
 
 namespace SurerLoki\Router;
 
-trait Request
+class Request
 {
-    protected $httpMethod;
-    protected $rootURL;
-    protected $requestRoute;
-    private $requestBody;
+    private $httpMethod;
+    private $rootUrl;
+    private $uri;
+    private $request;
 
     /**
      * @param string $url
      */
-    public function request($url)
+    public function __construct($url = null)
     {
         $this->httpMethod = $_SERVER['REQUEST_METHOD'];
-        $this->rootURL = rtrim($url, '/');
-        $this->requestRoute = isset($_GET['route']) ?
-            rtrim(filter_input(INPUT_GET, "route", FILTER_DEFAULT), '/') : $this->setURI($this->rootURL, $_SERVER['REQUEST_URI']);
+        $this->rootUrl = (!empty($url)) ? filter_var($url, FILTER_SANITIZE_URL) : null;
 
-        $data = (!empty($_SERVER['CONTENT_LENGTH'])) ?
-            filter_var_array((array) json_decode(file_get_contents('php://input', false, null, 0, $_SERVER['CONTENT_LENGTH'])), FILTER_DEFAULT) : null;
+        $this->parseURL($this->rootUrl);
 
-        $this->requestBody = filter_input_array(INPUT_POST, FILTER_DEFAULT) ?? $data;
+        $this->request = $this->parsePost() ?? $this->parseStream();
     }
 
     /**
-     * @param string $url
-     * @param string|null $get
-     * @return string|null
+     * @param string|null $url
+     * @return string
      */
-    private function setURI($url, $get)
+    private function parseURL($url)
     {
-        $base = explode('/', $url);
-        $get = ltrim($get, '/');
-
-        foreach ($base as $key) {
-            $uri = str_replace($key, "", $get);
+        if (!empty($_GET['uri'])) {
+            $this->uri = filter_input(INPUT_GET, "uri", FILTER_SANITIZE_STRING);
+            return;
         }
-        return ltrim(rtrim($uri, '/'), '/');
-    }
 
-    public function getUri()
-    {
-        return $this->requestRoute;
+        if (empty($url)) {
+            $this->uri = substr(rawurldecode($_SERVER['REQUEST_URI']), strlen(implode('/', array_slice(explode('/', $_SERVER['SCRIPT_NAME']), 0, -1)) . '/'));
+            return;
+        }
+
+        $uri = trim($_SERVER['REQUEST_URI'], '/');
+        $url = str_replace(["http://", "https://", "http://www.", "https://www."], "", $url);
+        $url = explode("/", trim($url, '/'));
+        $uri = str_replace($url, "", $uri);
+
+        $this->uri = ($uri != "") ? trim($uri, '/') : "/";
     }
 
     /**
-     * @param string $method
-     * @param array $data
      * @return array|null
      */
-    protected function parseData($data)
+    private function parsePost()
     {
-        $method = $this->httpMethod;
+        $post = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING) ?? null;
 
-        if ($method == 'GET') {
-            if (!empty($this->requestBody)) {
-                return array_merge($data, $this->requestBody);
-            } else {
-                return $data;
-            }
+        if (empty($post)) {
+            return $post;
         }
 
-        if ($method == 'POST') {
-            if (!empty($this->requestBody['_method'])) {
-                $this->httpMethod = $this->requestBody['_method'];
-                $withoutMethod = $this->requestBody;
-                unset($withoutMethod['_method']);
-                // ? return error 400
-                return (!empty($withoutMethod)) ? array_merge($data, $withoutMethod) : $data;
-            }
-
-            if (!empty($this->requestBody)) {
-                return array_merge($data, $this->requestBody);
-            }
-            // ? return error 400
-            return $data;
+        if (!empty($post['_method']) && in_array(strtoupper($post['_method']), Router::METHODS)) {
+            $this->httpMethod = strtoupper($post['_method']);
+            $_SERVER['REQUEST_METHOD'] = strtoupper($post['_method']);
+            unset($post['_method']);
+            return (!empty($post)) ? $post : null;
         }
 
-        return (!empty($this->requestBody)) ? array_merge($data, $this->requestBody) : $data;
+        return $post;
+    }
+
+    /**
+     * @return array|null
+     */
+    private function parseStream()
+    {
+        if (empty($_SERVER['CONTENT_LENGTH'])) {
+            return null;
+        }
+
+        if ($_SERVER['CONTENT_TYPE'] == 'application/json') {
+            $toArray = json_decode(file_get_contents('php://input', false, null, 0, $_SERVER['CONTENT_LENGTH']), true);
+            return filter_var_array($toArray, FILTER_SANITIZE_STRING);
+        }
+
+        if ($_SERVER['CONTENT_TYPE'] == 'application/xml') {
+            $xml = simplexml_load_string(file_get_contents('php://input', false, null, 0, $_SERVER['CONTENT_LENGTH']));
+            $toArray = json_decode(json_encode($xml), true);
+            return filter_var_array($toArray, FILTER_SANITIZE_STRING);
+        }
+
+        return null;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getUri()
+    {
+        return $this->uri;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getRequest()
+    {
+        return $this->request;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHttpMethod()
+    {
+        return $this->httpMethod;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRootUrl()
+    {
+        return $this->rootUrl;
     }
 }

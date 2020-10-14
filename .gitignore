@@ -1,9 +1,3 @@
-readme
 composer.lock
-.htaccess
-test/.htaccess
-test/index.php
 vendor
-src/Web.php
-src/Middleware.php
 .phpunit.result.cache

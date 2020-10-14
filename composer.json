@@ -15,13 +15,15 @@
     "Routes"
   ],
   "require": {
-    "php": "^7.3",
-    "phpunit/phpunit": "9.4.0"
+    "php": "^7.3"
   },
   "autoload": {
     "psr-4": {
       "SurerLoki\\Router\\": "src/",
-      "SurerLoki\\Router\\Test\\": "test/"
+      "SurerLoki\\Router\\Demo\\": "demo/"
     }
+  },
+  "require-dev": {
+    "phpunit/phpunit": "9.4.x"
   }
 }

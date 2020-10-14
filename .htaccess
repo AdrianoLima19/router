@@ -1,0 +1,5 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine on
+  RewriteRule ^$ demo/ [L]
+  RewriteRule (.*) demo/$1 [L]
+</IfModule>

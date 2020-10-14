@@ -4,103 +4,82 @@ namespace SurerLoki\Router;
 
 class Core extends Dispatch
 {
-    use Request;
-
-    protected $data;
-    protected $error;
+    /** @var SurerLoki\Router\Request */
+    protected $request;
     protected $routes;
-    private $namespace;
-    private $group;
-    private $nested;
-    protected $middlewares;
-    private $middlewareRoute;
 
     /**
      * @param string $url
      */
-    public function __construct($url)
+    public function __construct($url = null)
     {
-        $this->request($url);
+        $this->request = new Request($url);
+        // ? implement cache
     }
 
     /**
-     * @param string|array $method
+     * @param array $methods
      * @param string $route
      * @param string|callable $handler
+     * @param array|null $next
      */
-    protected function newRoute($method, $route, $handler)
+    protected function newRoute($methods, $route, $handler, $optionalParams)
     {
         $route = (trim($route, '/') != '/') ? trim($route, '/') : "";
-        $route = (!empty($this->group)) ? "/{$this->group}/{$route}" : "/{$route}";
-        $request = explode("/", $this->requestRoute);
-        $urlData = array_values(array_diff($request, explode("/", rtrim($route, '/'))));
+        $route = (!empty($optionalParams['group'])) ? "/{$optionalParams['group']}/{$route}" : "/{$route}";
 
-        preg_match_all('/\{\s*([a-zA-Z0-9_-]*)\}/', $route, $keys, PREG_SET_ORDER);
+        $parameters = $this->parseParameters($route, $this->request->getUri(), $optionalParams['regex']);
 
-        for ($key = 0; $key < count($keys); $key++) {
-            $data[$keys[$key][1]] = ($urlData[$key]) ?? null;
-        }
-        $data = $data ?? [];
+        $data = array_merge($parameters ?? [], $this->request->getRequest() ?? []);
+
         $pregRoute = preg_replace('~{([^}]*)}~', "([^/]+)", $route);
 
-        $this->middlewareRoute = [
-            "method" => $method,
-            "route" => $route,
-            "pregRoute" => $pregRoute
-        ];
-
-        array_map(function ($self) use ($data, $pregRoute, $route, $handler) {
-            $this->data = $this->parseData($data);
+        array_map(function ($self) use ($route, $handler, $optionalParams, $data, $pregRoute) {
             $this->routes[$self][$pregRoute] = [
                 "route" => $route,
                 "method" => $self,
-                "handler" => $this->handler($handler, $this->namespace),
+                "before" => $this->middleware($optionalParams['before']),
+                "after" => $this->middleware($optionalParams['after']),
+                "handler" => $this->handler($handler, $optionalParams['namespace']),
                 "action" => $this->action($handler),
-                "data" => $this->data
+                "data" => $data
             ];
-        }, is_array($method) ? $method : (array) $method);
+        }, $methods);
     }
 
     /**
-     * @param string $namespace
-     * @param callable|null $callback
+     * @param string $route
+     * @param string|null $uri
+     * @param string|null $regex
+     * @return array|null
      */
-    public function namespace($namespace, $callback = null)
+    private function parseParameters($route, $uri, $regex)
     {
-        if (!$callback) {
-            $this->namespace = $namespace;
-            return;
+        preg_match_all('/\{\s*([a-zA-Z0-9_-]*)\}/', $route, $brackets, PREG_SET_ORDER);
+        $data = array_values(array_diff(explode("/", $uri), explode("/", trim($route, '/'))));
+
+        if ($regex) {
+            for ($key = 0; $key < count($brackets); $key++) {
+                $match = $regex[$brackets[$key][1]] ?? null;
+                $keyData = $data[$key] ?? null;
+
+                if (!empty($match)) {
+                    preg_match_all("/$match/", $keyData, $pregData);
+
+                    $return[$brackets[$key][1]] = !empty($pregData[0]) ? implode("", $pregData[0]) : null;
+                } else {
+                    $return[$brackets[$key][1]] = $keyData;
+                }
+            }
+
+            return $return ?? [];
         }
 
-        $keepNamespace = $this->namespace;
-        $this->namespace = $namespace;
-        $callback($this);
-        $this->namespace = $keepNamespace;
-    }
-
-    /**
-     * @param string $group
-     * @param callable|null $callback
-     */
-    public function group($group, $callback = null)
-    {
-        $group = (trim($group, '/') != '/' ? trim($group, '/') : '');
-
-        if (!$callback) {
-            $this->group = $group;
-            return;
+        for ($key = 0; $key < count($brackets); $key++) {
+            $keyData = $data[$key] ?? null;
+            $return[$brackets[$key][1]] = $keyData;
         }
-
-        if (empty($this->nested)) {
-            $this->nested = $this->group;
-            $this->group = $group;
-            $callback($this);
-            $this->group = $this->nested;
-            $this->nested = null;
-        } else {
-            $this->group .= "/{$group}";
-            $callback($this);
-        }
+        return $return ?? [];
     }
 
     /**
@@ -123,24 +102,14 @@ class Core extends Dispatch
     }
 
     /**
-     * @param string|callable $handler
+     * @param string|callable $middleware
+     * @return array
      */
-    public function middleware($handler)
+    private function middleware($middleware)
     {
-        array_map(function ($self) use ($handler) {
-
-            if (is_string($handler)) {
-                $handler = explode(":", $handler);
-                $action = (!empty($handler[1])) ? $handler[1] : "handler";
-                $handler = $handler[0];
-            }
-
-            $this->middlewares[$self][$this->middlewareRoute['pregRoute']] = [
-                "route" => $this->middlewareRoute['route'],
-                "method" => $self,
-                "handler" => $handler,
-                "action" => isset($action) ? $action : null,
-            ];
-        }, is_array($this->middlewareRoute['method']) ? $this->middlewareRoute['method'] : (array) $this->middlewareRoute['method']);
+        if (is_string($middleware)) {
+            return ["handler" => explode(":", $middleware)[0] ?? null, "action" => explode(":", $middleware)[1] ?? null];
+        }
+        return ["handler" => $middleware ?? null, "action" => null];
     }
 }
