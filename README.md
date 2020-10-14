@@ -38,6 +38,31 @@ or run
 composer require surerloki/router ^0.2.1
 ```
 
+## Enabling htaccess
+
+On the root project folder create a .htaccess file and add the following commands:
+
+```apache
+<IfModule mod_rewrite.c>
+  RewriteEngine on
+  RewriteRule ^$ public/ [L]
+  RewriteRule (.*) public/$1 [L]
+</IfModule>
+```
+
+Now in the public folder create another .htaccess and add the following commands just substituting the project_folder for the actual project folder:
+
+```apache
+<IfModule mod_rewrite.c>
+  Options -Multiviews
+  RewriteEngine On
+  RewriteBase /project_folder/public
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteRule  ^(.+)$ index.php?uri=$1 [QSA,L]
+</IfModule>
+```
+
 ## Basic Routing
 
 The route definition takes the following structure:
