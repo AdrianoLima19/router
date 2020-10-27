@@ -4,7 +4,7 @@
 
     <testsuites>
         <testsuite name="router">
-            <directory>test</directory>
+            <directory>tests</directory>
         </testsuite>
     </testsuites>
 </phpunit>

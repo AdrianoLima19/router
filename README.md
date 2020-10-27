@@ -29,13 +29,13 @@ Router is a simple object-oriented library to route HTTP requests.
 Installation is available via Composer:
 
 ```json
-"surerloki/router": "^0.2.1"
+"surerloki/router": "^1.0.0"
 ```
 
 or run
 
 ```sh
-composer require surerloki/router ^0.2.1
+composer require surerloki/router ^1.0.0
 ```
 
 ## Enabling htaccess
@@ -157,7 +157,11 @@ $router->any("/", function () {
 Sometimes the route needs to capture segmets of the URI. For example the user's ID from the URL:
 
 ```php
-$router->get("'posts/{post}/comments/{comment}", function ($post, $comment) {
+$router->get("'posts/{post}/comments/{comment}", function ($data) {
+    /**
+     * $data['post']
+     * $data['comment']
+     */
     // code ...
 });
 ```
@@ -169,7 +173,7 @@ The `where` method accepts the parameter and a regex defining how the parameter 
 ```php
 get('user/{name}', function ($data) {
     //
-})->where('name', '[A-Za-z]+');
+})->where('name', '[a-zA-Z]+');
 
 get('user/{id}', function ($data) {
     //
@@ -177,7 +181,7 @@ get('user/{id}', function ($data) {
 
 get('user/{id}/{name}', function ($data) {
     //
-})->where(['id' => '[0-9]+', 'name' => '[a-z]+']);
+})->where(['id' => '[0-9]+', 'name' => '[a-zA-Z]+']);
 ```
 
 ### Namespaces
@@ -206,7 +210,7 @@ Groups can be nested with other groups and/or sets of urls
 
 ```php
 // set the group
-$router->group('/user', $handler);
+$router->group('/user');
 
 $router->get('/{name}', $handler); // /user/{name}
 
@@ -232,9 +236,9 @@ The `before` method will be executed before the route handling is processed.
 
 ```php
 $router->get('/user', function () {
-    //
+    // code ...
 })->before(function () {
-    //
+    // code ...
 });
 ```
 
@@ -242,9 +246,9 @@ The `after` method will be executed after the route handling is processed.
 
 ```php
 $router->get('/user', function () {
-    //
+    // code ...
 })->after(function () {
-    //
+    // code ...
 });
 ```
 
@@ -252,11 +256,11 @@ Both middlewares can be hooked to a route
 
 ```php
 $router->get('/user', function () {
-    //
+    // code ...
 })->before(function () {
-    //
+    // code ...
 })->after(function () {
-    //
+    // code ...
 });
 ```
 
@@ -265,8 +269,9 @@ $router->get('/user', function () {
 The `fallback` method will be executed when no other route matches the incoming request:
 
 ```php
-$router->fallback(function ($data) { // $data['error']
-    //
+$router->fallback(function ($data) { 
+    // $data['error']
+    // code ...
 });
 ```
 
