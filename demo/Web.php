@@ -20,14 +20,16 @@ class Web
             $data
         );
     }
+
     public function changeUser($data)
     {
-        echo "<h1>Web user</h1>";
+        echo "<h1>Web change user</h1>";
 
         var_dump(
             $data
         );
     }
+
     public function admin($data)
     {
         echo "<h1>Web Admin</h1>";

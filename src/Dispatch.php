@@ -16,18 +16,21 @@ class Dispatch
             if (!empty($this->fallback)) {
                 $this->runFallback();
             }
-            return;
+
+            http_response_code($this->error);
+            exit;
         }
 
-        foreach ($this->routes as $method => $routes) {
-            foreach ($routes as $route => $value) {
+        foreach ($this->routes as $method) {
+            foreach ($method as $route => $params) {
                 $route = trim($route, '/');
 
-                if (preg_match("~^" . $route . "$~", $this->request->getUri()) && $value['method'] == $this->request->getHttpMethod()) {
-                    $runRoute = $value;
-                    break;
-                } elseif (preg_match("~^" . $route . "$~", $this->request->getUri())) {
+                if (preg_match("~^" . $route . "$~", $this->request->getUri())) {
                     $routeExists = true;
+                    if ($params['method'] == $this->request->getHttpMethod()) {
+                        $runRoute = $params;
+                        break;
+                    }
                 }
             }
         }
@@ -40,10 +43,16 @@ class Dispatch
                 $this->runFallback();
             }
 
+            http_response_code($this->error);
             return;
         }
 
         if (!empty($runRoute)) {
+
+            if ($runRoute['method'] == 'HEAD') {
+                ob_start();
+            }
+
             if (!empty($runRoute['before']['handler'])) {
 
                 $this->dispatch($runRoute['before']['handler'], $runRoute['before']['action']);
@@ -64,6 +73,9 @@ class Dispatch
         if (!empty($this->fallback) && !empty($this->error)) {
             $this->runFallback();
         }
+
+        http_response_code($this->error);
+        return;
     }
 
     /**
@@ -93,11 +105,19 @@ class Dispatch
             $this->error = Router::NOT_IMPLEMENTED;
         }
 
-        if (!empty($this->fallback) && !empty($this->error)) {
+        if (!empty($this->error)) {
+            if (!empty($this->fallback)) {
+                http_response_code($this->error);
+                exit;
+            }
+
             $this->runFallback();
         }
     }
 
+    /**
+     * @param string|callable $handler
+     */
     public function fallback($handler)
     {
         if (is_string($handler)) {

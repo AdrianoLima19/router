@@ -17,6 +17,7 @@ final class Router extends Core
     public const NOT_FOUND = 404;
     public const METHOD_NOT_ALLOWED = 405;
     public const NOT_IMPLEMENTED = 501;
+    public const INTERNAL_ERROR = 500;
 
     /**
      * @param string $route

@@ -24,7 +24,7 @@ class Request
 
     /**
      * @param string|null $url
-     * @return string
+     * @return string|null
      */
     private function parseURL($url)
     {
@@ -37,13 +37,6 @@ class Request
             $this->uri = substr(rawurldecode($_SERVER['REQUEST_URI']), strlen(implode('/', array_slice(explode('/', $_SERVER['SCRIPT_NAME']), 0, -1)) . '/'));
             return;
         }
-
-        $uri = trim($_SERVER['REQUEST_URI'], '/');
-        $url = str_replace(["http://", "https://", "http://www.", "https://www."], "", $url);
-        $url = explode("/", trim($url, '/'));
-        $uri = str_replace($url, "", $uri);
-
-        $this->uri = ($uri != "") ? trim($uri, '/') : "/";
     }
 
     /**
@@ -115,7 +108,7 @@ class Request
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getRootUrl()
     {

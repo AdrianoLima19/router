@@ -9,7 +9,7 @@ class Core extends Dispatch
     protected $routes;
 
     /**
-     * @param string $url
+     * @param string|null $url
      */
     public function __construct($url = null)
     {
@@ -21,7 +21,7 @@ class Core extends Dispatch
      * @param array $methods
      * @param string $route
      * @param string|callable $handler
-     * @param array|null $next
+     * @param array|null $optionalParams
      */
     protected function newRoute($methods, $route, $handler, $optionalParams)
     {
@@ -79,6 +79,7 @@ class Core extends Dispatch
             $keyData = $data[$key] ?? null;
             $return[$brackets[$key][1]] = $keyData;
         }
+
         return $return ?? [];
     }
 
