@@ -2,8 +2,6 @@
 
 use PHPUnit\Framework\TestCase;
 
-use function PHPUnit\Framework\assertNotTrue;
-
 class RouteTest extends TestCase
 {
     /** @test route connection */
@@ -117,18 +115,6 @@ class RouteTest extends TestCase
         $this->expectOutputString('home');
         $router->run();
     }
-    /** @test route method head? */
-    // public function testHeadRoute()
-    // {
-    //     $_SERVER['REQUEST_URI'] = '/';
-    //     $_SERVER['REQUEST_METHOD'] = 'GET';
-    //     $router = new \SurerLoki\Router\Router();
-    //     $router->get('/', function ($data) {
-    //         echo 'home';
-    //     });
-    //     $this->expectOutputString('home');
-    //     $router->run();
-    // }
     /** @test route method post */
     public function testPostRoute()
     {
@@ -288,17 +274,19 @@ class RouteTest extends TestCase
         $_SERVER['REQUEST_URI'] = '/user';
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $router = new \SurerLoki\Router\Router();
+
         $router->group('/admin', function () use ($router) {
             $router->get('/dash', function ($data) {
                 echo 'admin dashboard';
             });
         });
+
         $router->get('/user', function ($data) {
             echo 'user dashboard';
         });
 
-        $this->expectOutputString('user dashboard');
         $router->run();
+        $this->expectOutputString('user dashboard');
     }
     /** @test route 2nestedGroups */
     public function testDoubleNestedGroupRoute()
@@ -314,7 +302,10 @@ class RouteTest extends TestCase
             });
         });
 
-        $this->expectOutputString('admin dashboard');
         $router->run();
+        $this->expectOutputString('admin dashboard');
     }
+    /** @test route fallback */
+    /** @test route redirect */
+    /** @test route route-to*/
 }
