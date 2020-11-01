@@ -6,7 +6,7 @@
 
 body {
   width: 100vw;
-  height: 100vh;
+  overflow-x: hidden;
 
   display: flex;
   flex-direction: column;
@@ -17,7 +17,7 @@ body {
 }
 
 header {
-  max-height: 35vh;
+  min-height: 35vh;
   color: white;
 }
 
@@ -75,4 +75,8 @@ a,
 
 form input.field {
   width: 350px;
+}
+
+.left-align {
+  align-items: flex-start;
 }

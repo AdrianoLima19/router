@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Demo</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="http://localhost:8080/style.css">
 </head>
 
 <body>
@@ -18,8 +18,40 @@
 
         $router->namespace("SurerLoki\Router\Demo");
 
+        $router->get('/routes', function () use ($router) {
+            echo "<h1>Routes</h1>";
+            echo '<div class="left-align">';
+            foreach ($router->list()['GET'] as $route) {
+                echo "<h2>Route: {$route['route']}</h2>";
+            }
+            echo '</div>';
+        });
+
         $router->get('/', 'Web:home');
+
         $router->get('/admin', 'Web:admin');
+
+        $router->group('/group', function () use ($router) {
+
+            $router->get('/one', function () {
+                echo "<h1>Group One<h1>";
+            });
+
+            $router->group('/nested', function () use ($router) {
+                $router->get('/two', function () {
+                    echo "<h1>Nested Group<h1>";
+                });
+            });
+            $router->group('/nested', function () use ($router) {
+                $router->get('/four', function () {
+                    echo "<h1>Nested Group<h1>";
+                });
+            });
+
+            $router->get('/three', function () {
+                echo "<h1>Group Three<h1>";
+            });
+        });
 
         $router->any('/user', 'Web:user');
 
@@ -36,8 +68,13 @@
     </header>
 
     <div class="redirects">
+        <a href="/routes">routes</a>
         <a href="/">home</a>
         <a href="/admin">admin</a>
+        <a href="/group/one">group one</a>
+        <a href="/group/nested/two">nested group two</a>
+        <a href="/group/three">group three</a>
+        <a href="/group/nested/four">nested group four</a>
 
         <a href="/unknow">fallback</a>
 

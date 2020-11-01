@@ -38,8 +38,8 @@ class Core extends Dispatch
             $this->routes[$self][$pregRoute] = [
                 "route" => $route,
                 "method" => $self,
-                "before" => $this->middleware($optionalParams['before']),
-                "after" => $this->middleware($optionalParams['after']),
+                "before" => $this->parseMiddleware($optionalParams['before']),
+                "after" => $this->parseMiddleware($optionalParams['after']),
                 "handler" => $this->handler($handler, $optionalParams['namespace']),
                 "action" => $this->action($handler),
                 "data" => $data
@@ -106,7 +106,7 @@ class Core extends Dispatch
      * @param string|callable $middleware
      * @return array
      */
-    private function middleware($middleware)
+    private function parseMiddleware($middleware)
     {
         if (is_string($middleware)) {
             return ["handler" => explode(":", $middleware)[0] ?? null, "action" => explode(":", $middleware)[1] ?? null];

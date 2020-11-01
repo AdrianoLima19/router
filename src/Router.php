@@ -2,6 +2,11 @@
 
 namespace SurerLoki\Router;
 
+/**
+ * @author Adriano Lima de Souza <surerloki3379@gmail.com>
+ * @package library
+ * @version 1.0.1
+ */
 final class Router extends Core
 {
     private $requestChain;
@@ -11,6 +16,7 @@ final class Router extends Core
     private $nested;
     private $invert;
 
+    /** @var METHODS HTTP Methods */
     public const METHODS = ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'];
 
     public const BAD_REQUEST = 400;
@@ -177,6 +183,16 @@ final class Router extends Core
         return $this;
     }
 
+    public function middleware($type)
+    {
+        array_map(function ($self) {
+            if (in_array(strtolower($self), ['before', 'after'])) {
+                //
+            }
+        }, is_string($type) ? (array) $type : $type);
+
+        return $this;
+    }
 
     /**
      * @param string $group

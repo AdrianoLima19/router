@@ -142,13 +142,42 @@ class Dispatch
         exit;
     }
 
-    public function redirect()
+    public function redirect($route)
     {
-        //
+        if (filter_var($route, FILTER_VALIDATE_URL)) {
+            header("Location: {$route}");
+            exit;
+        }
+
+        $route = '/' . filter_var(trim($route, '/'), FILTER_SANITIZE_SPECIAL_CHARS);
+        header("Location: {$route}");
+
+        exit;
     }
 
-    public function route()
+    public function route($route, $status = 301)
     {
-        //
+        $route = filter_var($route, FILTER_SANITIZE_SPECIAL_CHARS);
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $_SERVER['REQUEST_URI'] = $route;
+
+        $this->request = new Request($this->request->getRootUrl());
+        $route = "/{$this->request->getUri()}";
+
+
+        foreach ($this->routes['GET'] as $routes) {
+
+            if (preg_match("~^" . $routes['route'] . "$~", $route)) {
+
+                http_response_code($status);
+                $this->execute();
+
+                exit;
+            }
+        }
+
+        $this->runFallback();
+
+        exit;
     }
 }

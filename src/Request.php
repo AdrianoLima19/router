@@ -4,13 +4,13 @@ namespace SurerLoki\Router;
 
 class Request
 {
-    private $httpMethod;
-    private $rootUrl;
-    private $uri;
-    private $request;
+    private string $httpMethod;
+    private ?string $rootUrl;
+    private string $uri;
+    private ?array $request;
 
     /**
-     * @param string $url
+     * @param string|null $url
      */
     public function __construct($url = null)
     {
@@ -29,7 +29,7 @@ class Request
     private function parseURL($url)
     {
         if (!empty($_GET['uri'])) {
-            $this->uri = filter_input(INPUT_GET, "uri", FILTER_SANITIZE_STRING);
+            $this->uri = filter_input(INPUT_GET, "uri", FILTER_SANITIZE_SPECIAL_CHARS);
             return;
         }
 
@@ -44,7 +44,7 @@ class Request
      */
     private function parsePost()
     {
-        $post = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING) ?? null;
+        $post = filter_input_array(INPUT_POST, FILTER_SANITIZE_SPECIAL_CHARS) ?? null;
 
         if (empty($post)) {
             return $post;
@@ -71,13 +71,13 @@ class Request
 
         if ($_SERVER['CONTENT_TYPE'] == 'application/json') {
             $toArray = json_decode(file_get_contents('php://input', false, null, 0, $_SERVER['CONTENT_LENGTH']), true);
-            return filter_var_array($toArray, FILTER_SANITIZE_STRING);
+            return filter_var_array($toArray, FILTER_SANITIZE_SPECIAL_CHARS);
         }
 
         if ($_SERVER['CONTENT_TYPE'] == 'application/xml') {
             $xml = simplexml_load_string(file_get_contents('php://input', false, null, 0, $_SERVER['CONTENT_LENGTH']));
             $toArray = json_decode(json_encode($xml), true);
-            return filter_var_array($toArray, FILTER_SANITIZE_STRING);
+            return filter_var_array($toArray, FILTER_SANITIZE_SPECIAL_CHARS);
         }
 
         return null;
