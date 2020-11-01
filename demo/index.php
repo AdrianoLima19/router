@@ -1,49 +1,64 @@
-<?php
+<!DOCTYPE html>
+<html lang="en">
 
-include "../vendor/autoload.php";
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo</title>
+    <link rel="stylesheet" href="style.css">
+</head>
 
-$router = new \SurerLoki\Router\Router();
+<body>
+    <header>
+        <?php
 
-$router->namespace("SurerLoki\Router\Demo");
+        include "../vendor/autoload.php";
 
-$router->get('/', 'Web:home');
+        $router = new \SurerLoki\Router\Router();
 
-$router->match(['GET', 'POST'], '/user', 'Web:user')
-    ->before("SurerLoki\Router\Demo\Middleware:before");
+        $router->namespace("SurerLoki\Router\Demo");
 
-$router->match(['PUT', 'DELETE'], '/user/{id}', 'Web:changeUser');
+        $router->get('/', 'Web:home');
+        $router->get('/admin', 'Web:admin');
 
-$router->any('/admin', 'Web:admin');
+        $router->any('/user', 'Web:user');
 
-$router->any('/callback', function () {
-    echo 'callback';
-});
+        $router->fallback(function ($data) {
 
-$router->get('/table/{id}', function ($data) {
+            echo "<h1>ERROR {$data['error']}</h1>";
 
-    echo "user id = {$data['id']}";
+            echo '<a href="/">return</a>';
+        });
 
-    var_dump($data);
-})->where(['id' => "[0-9]+"]);
+        $router->run();
 
-$router->any('/regex/{number}/{string}/{mixed}', function ($data) {
+        ?>
+    </header>
 
-    echo "<h1>Regex</h1>";
+    <div class="redirects">
+        <a href="/">home</a>
+        <a href="/admin">admin</a>
 
-    var_dump(
-        "Number: {$data['number']}",
-        "String: {$data['string']}",
-        "Mixed: {$data['mixed']}",
-    );
-})->where(['number' => "[0-9]+", 'string' => "[a-zA-Z]+"]);
+        <a href="/unknow">fallback</a>
 
-$router->fallback(function ($data) {
+        <form action="/" method="post">
+            <input type="submit" value="method not allowed" class="link">
+        </form>
 
-    echo "<h1>ERROR {$data['error']}</h1>";
+        <form action="/user" method="post" autocomplete="off">
+            <input list="methods" name="_method" required class="field">
+            <datalist id="methods">
+                <option selected value="POST"></option>
+                <option value="PUT"></option>
+                <option value="PATCH"></option>
+                <option value="DELETE"></option>
+            </datalist>
+            <input type="text" name="first_name" value="John" class="field">
+            <input type="text" name="last_name" value="Doe" class="field">
+            <input type="text" name="email" value="johndoe68@gmail.com" class="field">
+            <input type="submit" value="send form">
+        </form>
+    </div>
+</body>
 
-    var_dump(
-        $data
-    );
-});
-
-$router->run();
+</html>
