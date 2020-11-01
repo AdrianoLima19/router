@@ -6,6 +6,8 @@ class Core extends Dispatch
 {
     /** @var SurerLoki\Router\Request */
     protected $request;
+
+    /** @var array */
     protected $routes;
 
     /**
@@ -14,16 +16,16 @@ class Core extends Dispatch
     public function __construct($url = null)
     {
         $this->request = new Request($url);
-        // ? implement cache
     }
 
     /**
      * @param array $methods
      * @param string $route
-     * @param string|callable $handler
-     * @param array|null $optionalParams
+     * @param callable|string $handler
+     * @param array $optionalParams
+     * @return void
      */
-    protected function newRoute($methods, $route, $handler, $optionalParams)
+    protected function newRoute($methods, $route, $handler, $optionalParams): void
     {
         $route = (trim($route, '/') != '/') ? trim($route, '/') : "";
         $route = (!empty($optionalParams['group'])) ? "/{$optionalParams['group']}/{$route}" : "/{$route}";
@@ -53,7 +55,7 @@ class Core extends Dispatch
      * @param string|null $regex
      * @return array|null
      */
-    private function parseParameters($route, $uri, $regex)
+    private function parseParameters($route, $uri, $regex): ?array
     {
         preg_match_all('/\{\s*([a-zA-Z0-9_-]*)\}/', $route, $brackets, PREG_SET_ORDER);
         $data = array_values(array_diff(explode("/", $uri), explode("/", trim($route, '/'))));
@@ -87,7 +89,7 @@ class Core extends Dispatch
      * @param string|callable $handler
      * @return string|null
      */
-    private function action($handler)
+    private function action($handler): ?string
     {
         return is_string($handler) ? explode(":", $handler)[1] : null;
     }
@@ -106,11 +108,19 @@ class Core extends Dispatch
      * @param string|callable $middleware
      * @return array
      */
-    private function parseMiddleware($middleware)
+    private function parseMiddleware($middleware): array
     {
         if (is_string($middleware)) {
             return ["handler" => explode(":", $middleware)[0] ?? null, "action" => explode(":", $middleware)[1] ?? null];
         }
         return ["handler" => $middleware ?? null, "action" => null];
+    }
+
+    /**
+     * @return array|null
+     */
+    public function list(): ?array
+    {
+        return $this->routes;
     }
 }

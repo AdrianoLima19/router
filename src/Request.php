@@ -4,10 +4,17 @@ namespace SurerLoki\Router;
 
 class Request
 {
-    private string $httpMethod;
-    private ?string $rootUrl;
-    private string $uri;
-    private ?array $request;
+    /** @var string|null */
+    private $httpMethod;
+
+    /** @var string|null */
+    private $rootUrl;
+
+    /** @var string|null */
+    private $uri;
+
+    /** @var array|null */
+    private $request;
 
     /**
      * @param string|null $url
@@ -24,9 +31,9 @@ class Request
 
     /**
      * @param string|null $url
-     * @return string|null
+     * @return void
      */
-    private function parseURL($url)
+    private function parseURL(?string $url): void
     {
         if (!empty($_GET['uri'])) {
             $this->uri = filter_input(INPUT_GET, "uri", FILTER_SANITIZE_SPECIAL_CHARS);
@@ -42,12 +49,12 @@ class Request
     /**
      * @return array|null
      */
-    private function parsePost()
+    private function parsePost(): ?array
     {
         $post = filter_input_array(INPUT_POST, FILTER_SANITIZE_SPECIAL_CHARS) ?? null;
 
         if (empty($post)) {
-            return $post;
+            return null;
         }
 
         if (!empty($post['_method']) && in_array(strtoupper($post['_method']), Router::METHODS)) {
@@ -63,7 +70,7 @@ class Request
     /**
      * @return array|null
      */
-    private function parseStream()
+    private function parseStream(): ?array
     {
         if (empty($_SERVER['CONTENT_LENGTH'])) {
             return null;
@@ -86,7 +93,7 @@ class Request
     /**
      * @return string|null
      */
-    public function getUri()
+    public function getUri(): ?string
     {
         return $this->uri;
     }
@@ -94,7 +101,7 @@ class Request
     /**
      * @return array|null
      */
-    public function getRequest()
+    public function getRequest(): ?array
     {
         return $this->request;
     }
@@ -102,7 +109,7 @@ class Request
     /**
      * @return string
      */
-    public function getHttpMethod()
+    public function getHttpMethod(): string
     {
         return $this->httpMethod;
     }
@@ -110,7 +117,7 @@ class Request
     /**
      * @return string|null
      */
-    public function getRootUrl()
+    public function getRootUrl(): ?string
     {
         return $this->rootUrl;
     }

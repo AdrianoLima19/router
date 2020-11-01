@@ -5,31 +5,51 @@ namespace SurerLoki\Router;
 /**
  * @author Adriano Lima de Souza <surerloki3379@gmail.com>
  * @package library
- * @version 1.0.1
  */
 final class Router extends Core
 {
+    /** @var array|null */
     private $requestChain;
+
+    /** @var string|null */
     private $namespace;
+
+    /** @var string|null */
     private $keepNamespace;
+
+    /** @var string|null */
     private $group;
+
+    /** @var array|null */
     private $nested;
+
+    /** @var array|null */
     private $invert;
 
-    /** @var METHODS HTTP Methods */
+    /** @var array HTTP verbs */
     public const METHODS = ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'];
 
+    /** @var int HTTP error code */
     public const BAD_REQUEST = 400;
+
+    /** @var int HTTP error code */
     public const NOT_FOUND = 404;
+
+    /** @var int HTTP error code */
     public const METHOD_NOT_ALLOWED = 405;
+
+    /** @var int HTTP error code */
     public const NOT_IMPLEMENTED = 501;
+
+    /** @var int HTTP error code */
     public const INTERNAL_ERROR = 500;
 
     /**
-     * @param string $route
+     * @param string|null $route
      * @param string|callable $handler
+     * @return Router
      */
-    public function any($route, $handler)
+    public function any($route, $handler): Router
     {
         $this->compile();
 
@@ -44,10 +64,12 @@ final class Router extends Core
      * @param string|array $methods
      * @param string $route
      * @param string|callable $handler
+     * @return Router
      */
-    public function match($methods, $route, $handler)
+    public function match($methods, $route, $handler): Router
     {
         $this->compile();
+
         $filteredMethods = array_map('strtoupper', is_string($methods) ? (array) $methods : $methods);
 
         array_map(function ($self) {
@@ -67,22 +89,25 @@ final class Router extends Core
     /**
      * @param string $route
      * @param string|callable $handler
+     * @return Router
      */
-    public function get($route, $handler)
+    public function get($route, $handler): Router
     {
         $this->compile();
 
         $this->requestChain['methods'] = ['GET', 'HEAD'];
         $this->requestChain['route'] = $route;
         $this->requestChain['handler'] = $handler;
+
         return $this;
     }
 
     /**
      * @param string $route
      * @param string|callable $handler
+     * @return Router
      */
-    public function post($route, $handler)
+    public function post($route, $handler): Router
     {
         $this->compile();
 
@@ -96,8 +121,9 @@ final class Router extends Core
     /**
      * @param string $route
      * @param string|callable $handler
+     * @return Router
      */
-    public function put($route, $handler)
+    public function put($route, $handler): Router
     {
         $this->compile();
 
@@ -111,8 +137,9 @@ final class Router extends Core
     /**
      * @param string $route
      * @param string|callable $handler
+     * @return Router
      */
-    public function patch($route, $handler)
+    public function patch($route, $handler): Router
     {
         $this->compile();
 
@@ -126,8 +153,9 @@ final class Router extends Core
     /**
      * @param string $route
      * @param string|callable $handler
+     * @return Router
      */
-    public function delete($route, $handler)
+    public function delete($route, $handler): Router
     {
         $this->compile();
 
@@ -141,8 +169,9 @@ final class Router extends Core
     /**
      * @param string $route
      * @param string|callable $handler
+     * @return Router
      */
-    public function options($route, $handler)
+    public function options($route, $handler): Router
     {
         $this->compile();
 
@@ -155,8 +184,9 @@ final class Router extends Core
 
     /**
      * @param array $params
+     * @return Router
      */
-    public function where($params)
+    public function where($params): Router
     {
         $this->requestChain['regex'] = $params;
 
@@ -165,8 +195,9 @@ final class Router extends Core
 
     /**
      * @param string|callable $before
+     * @return Router
      */
-    public function before($before)
+    public function before($before): Router
     {
         $this->requestChain['before'] = $before;
 
@@ -175,8 +206,9 @@ final class Router extends Core
 
     /**
      * @param string|callable $after
+     * @return Router
      */
-    public function after($after)
+    public function after($after): Router
     {
         $this->requestChain['after'] = $after;
 
@@ -187,7 +219,7 @@ final class Router extends Core
     {
         array_map(function ($self) {
             if (in_array(strtolower($self), ['before', 'after'])) {
-                //
+                // ? define how the middleware will be implemented
             }
         }, is_string($type) ? (array) $type : $type);
 
@@ -197,8 +229,9 @@ final class Router extends Core
     /**
      * @param string $group
      * @param string|callable|null $callback
+     * @return Router
      */
-    public function group($group, $callback = null)
+    public function group($group, $callback = null): Router
     {
         if (!empty($this->requestChain['route'])) {
             $this->compile();
@@ -208,29 +241,33 @@ final class Router extends Core
 
         if (empty($callback)) {
             $this->group = $group;
-            return;
+            return $this;
         }
+        $this->nested['base'] = $group;
 
         if (empty($this->nested['group'])) {
 
             $this->nested['group'] = $group;
+            $this->invert['group'] = 'placeholder';
             $callback($this);
-            $this->invert['group'] = true;
-            return;
+            $this->nested['group'] = $group;
+            // return;
         } else {
-
-            $this->nested['group'] .= "/{$group}";
             $callback($this);
-            return;
+            $this->invert['group'] = "{$this->nested['group']}/{$group}";
+            return $this;
         }
+
+        $this->compile($remove = true);
         return $this;
     }
 
     /**
      * @param string $namespace
      * @param string|callable|null $callback
+     * @return Router
      */
-    public function namespace($namespace, $callback = null)
+    public function namespace($namespace, $callback = null): Router
     {
         if (!empty($this->requestChain['route'])) {
             $this->compile();
@@ -239,7 +276,7 @@ final class Router extends Core
         if (empty($callback)) {
             $this->namespace = $namespace;
             unset($this->invert['namespace'], $this->nested['namespace'], $this->keepNamespace);
-            return;
+            return $this;
         }
 
         if (!empty($this->nested['namespace'])) {
@@ -253,9 +290,14 @@ final class Router extends Core
         return $this;
     }
 
-    public function compile()
+    /**
+     * @param boolean $remove
+     * @return void
+     */
+    public function compile($remove = false): void
     {
         if (!empty($this->requestChain)) {
+
             $this->newRoute(
                 $this->requestChain['methods'],
                 $this->requestChain['route'],
@@ -269,7 +311,9 @@ final class Router extends Core
                         : (!empty($this->keepNamespace)
                             ? $this->keepNamespace
                             : $this->namespace ?? null),
-                    "group" => (!empty($this->nested['group'])) ? $this->nested['group'] : $this->group ?? null,
+                    "group" => (!empty($this->invert['group']) && $this->invert['group'] != 'placeholder' && $this->invert['group'] != 'nested') ? $this->invert['group']
+                        : (!empty($this->nested['group']) ? $this->nested['group'] : ($this->group ?? null))
+
                 ]
             );
 
@@ -281,8 +325,12 @@ final class Router extends Core
                 unset($this->keepNamespace);
             }
 
-            if (!empty($this->invert['group'])) {
-                unset($this->nested['group'], $this->invert['group']);
+            if (!empty($this->nested['group']) && $this->invert['group'] == 'nested') {
+                unset($this->nested['group']);
+            }
+
+            if (!empty($this->invert['group']) && $this->invert['group'] != 'placeholder') {
+                $this->invert['group'] = 'nested';
             }
 
             if (!empty($this->invert['namespace'])) {
@@ -290,11 +338,14 @@ final class Router extends Core
             }
 
             unset($this->requestChain);
+            if ($remove) {
+                unset($this->nested['group'], $this->invert['group']);
+            }
             return;
         }
     }
 
-    public function run()
+    public function run(): void
     {
         $this->compile();
         $this->execute();
