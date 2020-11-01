@@ -4,7 +4,10 @@ namespace SurerLoki\Router;
 
 class Dispatch
 {
+    /** @var callable|string */
     private $fallback;
+
+    /** @var int */
     private $error;
 
     public function execute()
@@ -81,6 +84,7 @@ class Dispatch
     /**
      * @param string|callable $handler
      * @param string|null $action
+     * @param array $data
      */
     private function dispatch($handler, $action = null, $data = [])
     {
@@ -142,6 +146,10 @@ class Dispatch
         exit;
     }
 
+    /**
+     * @param string $route
+     * @return void
+     */
     public function redirect($route)
     {
         if (filter_var($route, FILTER_VALIDATE_URL)) {
@@ -155,6 +163,11 @@ class Dispatch
         exit;
     }
 
+    /**
+     * @param string $route
+     * @param integer $status
+     * @return void
+     */
     public function route($route, $status = 301)
     {
         $route = filter_var($route, FILTER_SANITIZE_SPECIAL_CHARS);
