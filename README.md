@@ -4,24 +4,25 @@
 ![php](https://img.shields.io/packagist/php-v/surerloki/router)
 ![version](https://img.shields.io/packagist/v/surerloki/router)
 
-Router is a simple object-oriented library to route HTTP requests.
+Router is a simple object-oriented library to handle HTTP routes.
 
 ## Features
 
 - Can be used with all [HTTP methods](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods)
+- [Basic Usage](#basic-usage)
 - [Single requests methods as `get()`, `post()`, `put()`, …](#route-methods)
 - [Dynamic routing](#route-parameters)
-- [Regular Expression Constraints](#Regular-Expression-Constraints)
-- [Middleware](#Middleware)
-- [Fallback Route](#Fallback-Route)
-- [Form Spoofing](#Form-Method-Spoofing)
+- [Regular Expression Constraints](#regular-expression-constraints)
+- [Middleware](#middleware)
+- [Fallback Route](#fallback-route)
+- [Form Spoofing](#form-method-spoofing)
 
 ## Requirements
 
 <ul style="list-style:circle;padding-left:1.5rem;margin-left:0;">
 <li><a href="https://getcomposer.org/doc/01-basic-usage.md#package-versions" target="_blank">Composer</a></li>
 <li><a href="https://www.php.net/downloads" target="_blank">PHP</a> 7.3^</li>
-<li>Rewrite URL</li>
+<li><a href="#enabling-htaccess">Rewrite URL</a></li>
 </ul>
 
 ## Installation
@@ -29,13 +30,13 @@ Router is a simple object-oriented library to route HTTP requests.
 Installation is available via Composer:
 
 ```json
-"surerloki/router": "^1.0.0"
+"surerloki/router": "1.x"
 ```
 
 or run
 
 ```sh
-composer require surerloki/router ^1.0.0
+composer require surerloki/router 1.x
 ```
 
 ## Enabling htaccess
@@ -63,37 +64,37 @@ Now in the public folder create another .htaccess and add the following commands
 </IfModule>
 ```
 
-## Basic Routing
+## Basic Usage
+
+#### Basic Routing
 
 The route definition takes the following structure:
 
 ```php
-$route->method($route, $callback);
-$route->method($route, $handler);
+$router->method($route, $callback);
+$router->method($route, $handler);
 ```
 
 Where:
 
-- \$route is an instance of Router.
-- method is an [HTTP request](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods) method.
+- \$router is an instance of Router.
+- method is an [HTTP request](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods).
 - \$route is a path on the server.
 - \$callback is executed when the route is matched.
 - \$handler execute the controller when the route is matched.
 
-The following example illustrate defining a route structure:
+#### Basic Structure
+
+The following example illustrate defining a basic route structure:
 
 ```php
 // Require autoload
 require __DIR__ . "../vendor/autoload.php";
 
-// Create router class
+// Create Router class
 $router = new \SurerLoki\Router\Router();
 
-/**
- * Other Routes
- */
-
-// Respond with Hello World! on the homepage
+// Respond to a GET request to the / route
 $router->get('/', function () {
     echo "Hello World!";
 });
@@ -115,7 +116,7 @@ $router->delete('/user/{id}', function ($data) {
 
 // Will be executed when no other route matches the request
 $router->fallback(function ($data) {
-    // Fallback aways return a $foo['error']
+    // Fallback aways return a $data['error']
     echo "ERROR {$data['error']}";
 });
 
@@ -125,15 +126,15 @@ $router->run()
 
 ## Route Methods
 
-The router allows the registered route to respond any single HTTP request method:
+The router allows the registered route to respond any HTTP request method:
 
 ```php
-$router->get($route, $handler);
-$router->post($route, $handler);
-$router->put($route, $handler);
-$router->patch($route, $handler);
-$router->delete($route, $handler);
-$router->options($route, $handler);
+$router->get('/route', function (){});
+$router->post('/route', function (){});
+$router->put('/route', function (){});
+$router->patch('/route', function (){});
+$router->delete('/route', function (){});
+$router->options('/route', function (){});
 ```
 
 But if the registered route needs to respond to multiple methods `match` can be used:
@@ -154,7 +155,7 @@ $router->any("/", function () {
 
 ## Route Parameters
 
-Sometimes the route needs to capture segmets of the URI. For example the user's ID from the URL:
+Sometimes the route needs to capture segmets of the URI:
 
 ```php
 $router->get("'posts/{post}/comments/{comment}", function ($data) {
@@ -186,11 +187,11 @@ get('user/{id}/{name}', function ($data) {
 
 ### Namespaces
 
-Assign the same PHP namespace to controllers using the namespace method:
+Assign the same namespace to controllers using the namespace method:
 
 ```php
 $router->namespace("SurerLoki\Router\Demo");
-$router->get($route, 'Web:route'); // SurerLoki\Router\Demo\Web -> route()
+$router->get($route, 'Web:route'); // Namespace\Path\To\Web -> route()
 ```
 
 ### Groups
@@ -225,7 +226,7 @@ $router->group("/admin", function () use ($router) {
     $router->get('/info', $handler); // /admin/info
 });
 
-// get the last applied group (if any)
+// get the last applied group if any
 $router->get('/{id}', $handler); // /user/{id}
 
 ```
@@ -264,12 +265,30 @@ $router->get('/user', function () {
 });
 ```
 
+### Redirect
+
+If the route redirects to another URI, the method `redirect` provides a convenient shortcut for performing a simple redirect:
+
+```php
+$router->get("/redirect", function () {
+    $router->redirect('/');
+});
+```
+
+The `route` can be used to redirect the route and customize the status code:
+
+```php
+$router->get("/redirect-to-login", function () {
+    $router->route('/login', 301);
+});
+```
+
 ### Fallback Route
 
 The `fallback` method will be executed when no other route matches the incoming request:
 
 ```php
-$router->fallback(function ($data) { 
+$router->fallback(function ($data) {
     // $data['error']
     // code ...
 });
