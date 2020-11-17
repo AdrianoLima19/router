@@ -6,7 +6,10 @@ class RouteTest extends TestCase
 {
     /**
      * @test route connection
-     * @covers
+     * @covers \SurerLoki\Router\Router
+     * @covers \SurerLoki\Router\Core
+     * @covers \SurerLoki\Router\Request
+     * @covers \SurerLoki\Router\Dispatch
      */
     public function testInitClass()
     {
@@ -18,7 +21,10 @@ class RouteTest extends TestCase
     }
     /** 
      * @test route method any 
-     * @covers
+     * @covers \SurerLoki\Router\Router
+     * @covers \SurerLoki\Router\Core
+     * @covers \SurerLoki\Router\Request
+     * @covers \SurerLoki\Router\Dispatch
      */
     public function testAnyRouteMethodGET()
     {
@@ -33,7 +39,10 @@ class RouteTest extends TestCase
     }
 
     /**
-     * @covers
+     * @covers \SurerLoki\Router\Router
+     * @covers \SurerLoki\Router\Core
+     * @covers \SurerLoki\Router\Request
+     * @covers \SurerLoki\Router\Dispatch
      */
     public function testAnyRouteMethodPOST()
     {
@@ -48,7 +57,10 @@ class RouteTest extends TestCase
     }
 
     /**
-     * @covers
+     * @covers \SurerLoki\Router\Router
+     * @covers \SurerLoki\Router\Core
+     * @covers \SurerLoki\Router\Request
+     * @covers \SurerLoki\Router\Dispatch
      */
     public function testAnyRouteMethodPUT()
     {
@@ -63,7 +75,10 @@ class RouteTest extends TestCase
     }
 
     /**
-     * @covers
+     * @covers \SurerLoki\Router\Router
+     * @covers \SurerLoki\Router\Core
+     * @covers \SurerLoki\Router\Request
+     * @covers \SurerLoki\Router\Dispatch
      */
     public function testAnyRouteMethodPATCH()
     {
@@ -78,7 +93,10 @@ class RouteTest extends TestCase
     }
 
     /**
-     * @covers
+     * @covers \SurerLoki\Router\Router
+     * @covers \SurerLoki\Router\Core
+     * @covers \SurerLoki\Router\Request
+     * @covers \SurerLoki\Router\Dispatch
      */
     public function testAnyRouteMethodDELETE()
     {
@@ -91,10 +109,13 @@ class RouteTest extends TestCase
         $this->expectOutputString('user');
         $router->run();
     }
-    
+
     /** 
      * @test route method match
-     * @covers
+     * @covers \SurerLoki\Router\Router
+     * @covers \SurerLoki\Router\Core
+     * @covers \SurerLoki\Router\Request
+     * @covers \SurerLoki\Router\Dispatch
      */
     public function testMatchRouteMethodGET()
     {
@@ -109,7 +130,10 @@ class RouteTest extends TestCase
     }
 
     /**
-     * @covers
+     * @covers \SurerLoki\Router\Router
+     * @covers \SurerLoki\Router\Core
+     * @covers \SurerLoki\Router\Request
+     * @covers \SurerLoki\Router\Dispatch
      */
     public function testMatchRouteMethodPOST()
     {
@@ -124,7 +148,10 @@ class RouteTest extends TestCase
     }
 
     /**
-     * @covers
+     * @covers \SurerLoki\Router\Router
+     * @covers \SurerLoki\Router\Core
+     * @covers \SurerLoki\Router\Request
+     * @covers \SurerLoki\Router\Dispatch
      */
     public function testMatchRouteMethodPUT()
     {
@@ -140,7 +167,10 @@ class RouteTest extends TestCase
 
     /** 
      * @test route method get
-     * @covers
+     * @covers \SurerLoki\Router\Router
+     * @covers \SurerLoki\Router\Core
+     * @covers \SurerLoki\Router\Request
+     * @covers \SurerLoki\Router\Dispatch
      */
     public function testGetRoute()
     {
@@ -156,7 +186,10 @@ class RouteTest extends TestCase
 
     /** 
      * @test route method post 
-     * @covers
+     * @covers \SurerLoki\Router\Router
+     * @covers \SurerLoki\Router\Core
+     * @covers \SurerLoki\Router\Request
+     * @covers \SurerLoki\Router\Dispatch
      */
     public function testPostRoute()
     {
@@ -172,7 +205,10 @@ class RouteTest extends TestCase
 
     /** 
      * @test route method put 
-     * @covers
+     * @covers \SurerLoki\Router\Router
+     * @covers \SurerLoki\Router\Core
+     * @covers \SurerLoki\Router\Request
+     * @covers \SurerLoki\Router\Dispatch
      */
     public function testPutRoute()
     {
@@ -188,7 +224,10 @@ class RouteTest extends TestCase
 
     /** 
      * @test route method patch 
-     * @covers
+     * @covers \SurerLoki\Router\Router
+     * @covers \SurerLoki\Router\Core
+     * @covers \SurerLoki\Router\Request
+     * @covers \SurerLoki\Router\Dispatch
      */
     public function testPatchRoute()
     {
@@ -204,7 +243,10 @@ class RouteTest extends TestCase
 
     /** 
      * @test route method delete 
-     * @covers
+     * @covers \SurerLoki\Router\Router
+     * @covers \SurerLoki\Router\Core
+     * @covers \SurerLoki\Router\Request
+     * @covers \SurerLoki\Router\Dispatch
      */
     public function testDeleteRoute()
     {
@@ -220,7 +262,10 @@ class RouteTest extends TestCase
 
     /** 
      * @test route method options 
-     * @covers
+     * @covers \SurerLoki\Router\Router
+     * @covers \SurerLoki\Router\Core
+     * @covers \SurerLoki\Router\Request
+     * @covers \SurerLoki\Router\Dispatch
      */
     public function testOptionsRoute()
     {
@@ -236,7 +281,10 @@ class RouteTest extends TestCase
 
     /** 
      * @test route where 
-     * @covers
+     * @covers \SurerLoki\Router\Router
+     * @covers \SurerLoki\Router\Core
+     * @covers \SurerLoki\Router\Request
+     * @covers \SurerLoki\Router\Dispatch
      */
     public function testWhereIntegerRegex()
     {
@@ -251,7 +299,10 @@ class RouteTest extends TestCase
     }
 
     /** 
-     * @covers
+     * @covers \SurerLoki\Router\Router
+     * @covers \SurerLoki\Router\Core
+     * @covers \SurerLoki\Router\Request
+     * @covers \SurerLoki\Router\Dispatch
      */
     public function testWhereStringRegex()
     {
@@ -267,7 +318,10 @@ class RouteTest extends TestCase
 
     /** 
      * @test route before 
-     * @covers
+     * @covers \SurerLoki\Router\Router
+     * @covers \SurerLoki\Router\Core
+     * @covers \SurerLoki\Router\Request
+     * @covers \SurerLoki\Router\Dispatch
      */
     public function testMiddlewareBefore()
     {
@@ -285,7 +339,10 @@ class RouteTest extends TestCase
 
     /** 
      * @test route after 
-     * @covers
+     * @covers \SurerLoki\Router\Router
+     * @covers \SurerLoki\Router\Core
+     * @covers \SurerLoki\Router\Request
+     * @covers \SurerLoki\Router\Dispatch
      */
     public function testMiddlewareAfter()
     {
@@ -302,7 +359,10 @@ class RouteTest extends TestCase
     }
 
     /** 
-     * @covers
+     * @covers \SurerLoki\Router\Router
+     * @covers \SurerLoki\Router\Core
+     * @covers \SurerLoki\Router\Request
+     * @covers \SurerLoki\Router\Dispatch
      */
     public function testMiddlewareBeforeAfter()
     {
@@ -322,7 +382,10 @@ class RouteTest extends TestCase
 
     /** 
      * @test route group 
-     * @covers
+     * @covers \SurerLoki\Router\Router
+     * @covers \SurerLoki\Router\Core
+     * @covers \SurerLoki\Router\Request
+     * @covers \SurerLoki\Router\Dispatch
      */
     public function testGroupRoute()
     {
@@ -339,7 +402,10 @@ class RouteTest extends TestCase
 
     /** 
      * @test route nestedGroups 
-     * @covers
+     * @covers \SurerLoki\Router\Router
+     * @covers \SurerLoki\Router\Core
+     * @covers \SurerLoki\Router\Request
+     * @covers \SurerLoki\Router\Dispatch
      */
     public function testNestedGroupRoute()
     {
@@ -357,7 +423,10 @@ class RouteTest extends TestCase
     }
 
     /** 
-     * @covers
+     * @covers \SurerLoki\Router\Router
+     * @covers \SurerLoki\Router\Core
+     * @covers \SurerLoki\Router\Request
+     * @covers \SurerLoki\Router\Dispatch
      */
     public function testAfterNestedGroupRoute()
     {
@@ -381,7 +450,10 @@ class RouteTest extends TestCase
 
     /** 
      * @test route 2nestedGroups 
-     * @covers
+     * @covers \SurerLoki\Router\Router
+     * @covers \SurerLoki\Router\Core
+     * @covers \SurerLoki\Router\Request
+     * @covers \SurerLoki\Router\Dispatch
      */
     public function testDoubleNestedGroupRoute()
     {
