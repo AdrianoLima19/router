@@ -15,8 +15,9 @@ parsers:
       macro: no
       
 ignore:
-  - "*/tests/.*"
-  - "*/demo/.*"
+  - "*/tests/*"
+  - "*/demo/*"
+  - "*/vendor/*"
   
 comment:
   layout: "reach,diff,flags,files,footer"
