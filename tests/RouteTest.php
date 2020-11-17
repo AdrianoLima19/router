@@ -5,9 +5,9 @@ use PHPUnit\Framework\TestCase;
 class RouteTest extends TestCase
 {
     /**
-      * @test route connection 
-      * @covers
-      */
+     * @test route connection
+     * @covers
+     */
     public function testInitClass()
     {
         $_SERVER['SCRIPT_NAME'] = '/index.php';
@@ -16,7 +16,10 @@ class RouteTest extends TestCase
         $_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.1';
         $this->assertInstanceOf('\SurerLoki\Router\Router', new \SurerLoki\Router\Router());
     }
-    /** @test route method any @covers */
+    /** 
+     * @test route method any 
+     * @covers
+     */
     public function testAnyRouteMethodGET()
     {
         $_SERVER['REQUEST_URI'] = '/user';
@@ -28,9 +31,10 @@ class RouteTest extends TestCase
         $this->expectOutputString('user');
         $router->run();
     }
+
     /**
-      * @covers
-    */
+     * @covers
+     */
     public function testAnyRouteMethodPOST()
     {
         $_SERVER['REQUEST_URI'] = '/user';
@@ -42,9 +46,10 @@ class RouteTest extends TestCase
         $this->expectOutputString('user');
         $router->run();
     }
+
     /**
-      * @covers
-    */
+     * @covers
+     */
     public function testAnyRouteMethodPUT()
     {
         $_SERVER['REQUEST_URI'] = '/user';
@@ -56,9 +61,10 @@ class RouteTest extends TestCase
         $this->expectOutputString('user');
         $router->run();
     }
+
     /**
-      * @covers
-    */
+     * @covers
+     */
     public function testAnyRouteMethodPATCH()
     {
         $_SERVER['REQUEST_URI'] = '/user';
@@ -70,9 +76,10 @@ class RouteTest extends TestCase
         $this->expectOutputString('user');
         $router->run();
     }
+
     /**
-      * @covers
-    */
+     * @covers
+     */
     public function testAnyRouteMethodDELETE()
     {
         $_SERVER['REQUEST_URI'] = '/user';
@@ -84,7 +91,11 @@ class RouteTest extends TestCase
         $this->expectOutputString('user');
         $router->run();
     }
-    /** @test route method match @covers */
+    
+    /** 
+     * @test route method match
+     * @covers
+     */
     public function testMatchRouteMethodGET()
     {
         $_SERVER['REQUEST_URI'] = '/user';
@@ -96,9 +107,10 @@ class RouteTest extends TestCase
         $this->expectOutputString('user');
         $router->run();
     }
+
     /**
-      * @covers
-    */
+     * @covers
+     */
     public function testMatchRouteMethodPOST()
     {
         $_SERVER['REQUEST_URI'] = '/user';
@@ -110,9 +122,10 @@ class RouteTest extends TestCase
         $this->expectOutputString('user');
         $router->run();
     }
+
     /**
-      * @covers
-    */
+     * @covers
+     */
     public function testMatchRouteMethodPUT()
     {
         $_SERVER['REQUEST_URI'] = '/user';
@@ -124,7 +137,11 @@ class RouteTest extends TestCase
         $this->expectOutputString('user');
         $router->run();
     }
-    /** @test route method get @covers */
+
+    /** 
+     * @test route method get
+     * @covers
+     */
     public function testGetRoute()
     {
         $_SERVER['REQUEST_URI'] = '/';
@@ -136,7 +153,11 @@ class RouteTest extends TestCase
         $this->expectOutputString('home');
         $router->run();
     }
-    /** @test route method post @covers */
+
+    /** 
+     * @test route method post 
+     * @covers
+     */
     public function testPostRoute()
     {
         $_SERVER['REQUEST_URI'] = '/';
@@ -148,7 +169,11 @@ class RouteTest extends TestCase
         $this->expectOutputString('home');
         $router->run();
     }
-    /** @test route method put @covers */
+
+    /** 
+     * @test route method put 
+     * @covers
+     */
     public function testPutRoute()
     {
         $_SERVER['REQUEST_URI'] = '/';
@@ -160,7 +185,11 @@ class RouteTest extends TestCase
         $this->expectOutputString('home');
         $router->run();
     }
-    /** @test route method patch @covers */
+
+    /** 
+     * @test route method patch 
+     * @covers
+     */
     public function testPatchRoute()
     {
         $_SERVER['REQUEST_URI'] = '/';
@@ -172,7 +201,11 @@ class RouteTest extends TestCase
         $this->expectOutputString('home');
         $router->run();
     }
-    /** @test route method delete @covers */
+
+    /** 
+     * @test route method delete 
+     * @covers
+     */
     public function testDeleteRoute()
     {
         $_SERVER['REQUEST_URI'] = '/';
@@ -184,7 +217,11 @@ class RouteTest extends TestCase
         $this->expectOutputString('home');
         $router->run();
     }
-    /** @test route method options @covers */
+
+    /** 
+     * @test route method options 
+     * @covers
+     */
     public function testOptionsRoute()
     {
         $_SERVER['REQUEST_URI'] = '/';
@@ -196,7 +233,11 @@ class RouteTest extends TestCase
         $this->expectOutputString('home');
         $router->run();
     }
-    /** @test route where @covers */
+
+    /** 
+     * @test route where 
+     * @covers
+     */
     public function testWhereIntegerRegex()
     {
         $_SERVER['REQUEST_URI'] = '/user/1a2b3';
@@ -208,7 +249,10 @@ class RouteTest extends TestCase
         $this->expectOutputString('user id = 123');
         $router->run();
     }
-    /** @covers */
+
+    /** 
+     * @covers
+     */
     public function testWhereStringRegex()
     {
         $_SERVER['REQUEST_URI'] = '/user/A1dr34ia6n7o';
@@ -220,7 +264,11 @@ class RouteTest extends TestCase
         $this->expectOutputString('user name = Adriano');
         $router->run();
     }
-    /** @test route before @covers */
+
+    /** 
+     * @test route before 
+     * @covers
+     */
     public function testMiddlewareBefore()
     {
         $_SERVER['REQUEST_URI'] = '/user';
@@ -234,7 +282,11 @@ class RouteTest extends TestCase
         $this->expectOutputString('check if logged user page');
         $router->run();
     }
-    /** @test route after @covers */
+
+    /** 
+     * @test route after 
+     * @covers
+     */
     public function testMiddlewareAfter()
     {
         $_SERVER['REQUEST_URI'] = '/user';
@@ -248,7 +300,10 @@ class RouteTest extends TestCase
         $this->expectOutputString('user page do something');
         $router->run();
     }
-    /** @covers */
+
+    /** 
+     * @covers
+     */
     public function testMiddlewareBeforeAfter()
     {
         $_SERVER['REQUEST_URI'] = '/user';
@@ -264,7 +319,11 @@ class RouteTest extends TestCase
         $this->expectOutputString('check if logged user page do something');
         $router->run();
     }
-    /** @test route group */
+
+    /** 
+     * @test route group 
+     * @covers
+     */
     public function testGroupRoute()
     {
         $_SERVER['REQUEST_URI'] = '/admin/dash';
@@ -277,7 +336,11 @@ class RouteTest extends TestCase
         $this->expectOutputString('admin dashboard');
         $router->run();
     }
-    /** @test route nestedGroups @covers */
+
+    /** 
+     * @test route nestedGroups 
+     * @covers
+     */
     public function testNestedGroupRoute()
     {
         $_SERVER['REQUEST_URI'] = '/admin/dash';
@@ -292,7 +355,10 @@ class RouteTest extends TestCase
         $this->expectOutputString('admin dashboard');
         $router->run();
     }
-    /** @covers */
+
+    /** 
+     * @covers
+     */
     public function testAfterNestedGroupRoute()
     {
         $_SERVER['REQUEST_URI'] = '/user';
@@ -312,7 +378,11 @@ class RouteTest extends TestCase
         $router->run();
         $this->expectOutputString('user dashboard');
     }
-    /** @test route 2nestedGroups @covers */
+
+    /** 
+     * @test route 2nestedGroups 
+     * @covers
+     */
     public function testDoubleNestedGroupRoute()
     {
         $_SERVER['REQUEST_URI'] = '/admin/dash/info';
