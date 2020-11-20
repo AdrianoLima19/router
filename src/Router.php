@@ -3,300 +3,387 @@
 namespace SurerLoki\Router;
 
 /**
+ * @version 2.0.0
  * @author Adriano Lima de Souza <surerloki3379@gmail.com>
+ * @license MIT
  * @package library
  */
-final class Router extends Core
+class Router extends Core
 {
-    /** @var array|null */
+    /** @var array */
     private $requestChain;
 
-    /** @var string|null */
-    private $namespace;
+    /** @var string */
+    protected $namespace;
 
-    /** @var string|null */
-    private $keepNamespace;
+    /** @var string */
+    private $middleware;
 
-    /** @var string|null */
-    private $group;
+    /** @var array */
+    private $groupChain;
 
-    /** @var array|null */
-    private $nested;
+    /** @var string */
+    private $compiler;
 
-    /** @var array|null */
-    private $invert;
+    /** @var int */
+    private $counter = 0;
 
     /** @var array HTTP verbs */
     public const METHODS = ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'];
 
-    /** @var int HTTP error code */
-    public const BAD_REQUEST = 400;
-
-    /** @var int HTTP error code */
+    /** @var int */
     public const NOT_FOUND = 404;
 
-    /** @var int HTTP error code */
+    /** @var int */
     public const METHOD_NOT_ALLOWED = 405;
 
-    /** @var int HTTP error code */
-    public const NOT_IMPLEMENTED = 501;
-
-    /** @var int HTTP error code */
+    /** @var int */
     public const INTERNAL_ERROR = 500;
 
+    /** @var int */
+    public const NOT_IMPLEMENTED = 501;
+
     /**
-     * @param string|null $route
+     * @param string|null $baseUrl
+     * @return void
+     */
+    public function __construct($baseUrl = null)
+    {
+        parent::__construct($baseUrl);
+    }
+
+    /**
+     * @param array $method
+     * @param string $route
+     * @param string|callable $handler
+     * @return void
+     */
+    private function parseMethod($method, $route, $handler): void
+    {
+        if (!empty($this->requestChain['route']) || $this->compiler == 'end') {
+
+            $this->compile();
+        }
+
+        if (!empty($this->compiler)) {
+
+            $this->counter++;
+            $this->groupChain[$this->counter] = [
+                "methods" => [
+                    $method
+                ],
+                "route" => $route,
+                "handler" => $handler
+            ];
+        } else {
+
+            $this->requestChain['methods'] = $method;
+            $this->requestChain['route'] = $route;
+            $this->requestChain['handler'] = $handler;
+        }
+    }
+
+    /**
+     * Include all HTTP verbs to the given route.
+     * 
+     * @param string $route
      * @param string|callable $handler
      * @return Router
      */
     public function any($route, $handler): Router
     {
-        $this->compile();
-
-        $this->requestChain['methods'] = self::METHODS;
-        $this->requestChain['route'] = $route;
-        $this->requestChain['handler'] = $handler;
+        $this->parseMethod(self::METHODS, $route, $handler);
 
         return $this;
     }
 
     /**
-     * @param string|array $methods
+     * Include any valid HTTP verbs provided for the given route.
+     * 
+     * @param array $methods
      * @param string $route
      * @param string|callable $handler
      * @return Router
      */
     public function match($methods, $route, $handler): Router
     {
-        $this->compile();
-
         $filteredMethods = array_map('strtoupper', is_string($methods) ? (array) $methods : $methods);
 
         array_map(function ($self) {
+
             if (!in_array($self, self::METHODS)) {
-                http_response_code(self::METHOD_NOT_ALLOWED);
-                throw new \Exception("Method {$self} not allowed", 405);
+
+                $debug = debug_backtrace();
+                $this->handleError($self, $debug[0]['line'], $debug[0]['file']);
             }
         }, $filteredMethods);
 
-        $this->requestChain['methods'] = $filteredMethods;
-        $this->requestChain['route'] = $route;
-        $this->requestChain['handler'] = $handler;
+        $this->parseMethod($filteredMethods, $route, $handler);
 
         return $this;
     }
 
     /**
+     * Include HTTP GET verb to the given route.
+     * 
      * @param string $route
      * @param string|callable $handler
      * @return Router
      */
     public function get($route, $handler): Router
     {
-        $this->compile();
-
-        $this->requestChain['methods'] = ['GET', 'HEAD'];
-        $this->requestChain['route'] = $route;
-        $this->requestChain['handler'] = $handler;
+        $this->parseMethod(["GET"], $route, $handler);
 
         return $this;
     }
 
     /**
+     * Include HTTP HEAD verb to the given route.
+     * 
+     * @param string $route
+     * @param string|callable $handler
+     * @return Router
+     */
+    public function head($route, $handler): Router
+    {
+        $this->parseMethod(["HEAD"], $route, $handler);
+
+        return $this;
+    }
+
+    /**
+     * Include HTTP POST verb to the given route.
+     * 
      * @param string $route
      * @param string|callable $handler
      * @return Router
      */
     public function post($route, $handler): Router
     {
-        $this->compile();
-
-        $this->requestChain['methods'] = ['POST'];
-        $this->requestChain['route'] = $route;
-        $this->requestChain['handler'] = $handler;
+        $this->parseMethod(["POST"], $route, $handler);
 
         return $this;
     }
 
     /**
+     * Include HTTP PUT verb to the given route.
+     * 
      * @param string $route
      * @param string|callable $handler
      * @return Router
      */
     public function put($route, $handler): Router
     {
-        $this->compile();
-
-        $this->requestChain['methods'] = ['PUT'];
-        $this->requestChain['route'] = $route;
-        $this->requestChain['handler'] = $handler;
+        $this->parseMethod(["PUT"], $route, $handler);
 
         return $this;
     }
 
     /**
+     * Include HTTP PATCH verb to the given route.
+     * 
      * @param string $route
      * @param string|callable $handler
      * @return Router
      */
     public function patch($route, $handler): Router
     {
-        $this->compile();
-
-        $this->requestChain['methods'] = ['PATCH'];
-        $this->requestChain['route'] = $route;
-        $this->requestChain['handler'] = $handler;
+        $this->parseMethod(["PATCH"], $route, $handler);
 
         return $this;
     }
 
-    /**
+    /**Include HTTP DELETE verb to the given route.
+     * 
      * @param string $route
      * @param string|callable $handler
      * @return Router
      */
     public function delete($route, $handler): Router
     {
-        $this->compile();
-
-        $this->requestChain['methods'] = ['DELETE'];
-        $this->requestChain['route'] = $route;
-        $this->requestChain['handler'] = $handler;
+        $this->parseMethod(["DELETE"], $route, $handler);
 
         return $this;
     }
 
     /**
+     * Include HTTP OPTIONS verb to the given route.
+     * 
      * @param string $route
      * @param string|callable $handler
      * @return Router
      */
     public function options($route, $handler): Router
     {
-        $this->compile();
-
-        $this->requestChain['methods'] = ['OPTIONS'];
-        $this->requestChain['route'] = $route;
-        $this->requestChain['handler'] = $handler;
+        $this->parseMethod(["OPTIONS"], $route, $handler);
 
         return $this;
     }
 
     /**
+     * Apply the given regex in the corresponding route parameter.
+     * 
      * @param array $params
      * @return Router
      */
     public function where($params): Router
     {
-        $this->requestChain['regex'] = $params;
+        if (!empty($this->compiler)) {
+
+            $this->groupChain[$this->counter]['regex'] = $params;
+        } else {
+
+            $this->requestChain['regex'] = $params;
+        }
 
         return $this;
     }
 
     /**
+     * Run this middleware before the assigned route or group.
+     * 
      * @param string|callable $before
      * @return Router
      */
     public function before($before): Router
     {
-        $this->requestChain['before'] = $before;
+        if (!empty($this->compiler) && $this->compiler != 'end') {
+
+            $this->groupChain[$this->counter]['before'] = $before;
+        } else {
+
+            $this->requestChain['before'] = $before;
+        }
 
         return $this;
     }
 
     /**
+     * Run this middleware after the assigned route or group.
+     * 
      * @param string|callable $after
      * @return Router
      */
     public function after($after): Router
     {
-        $this->requestChain['after'] = $after;
+        if (!empty($this->compiler) && $this->compiler != 'end') {
 
-        return $this;
-    }
-
-    public function middleware($type)
-    {
-        array_map(function ($self) {
-            if (in_array(strtolower($self), ['before', 'after'])) {
-                // ? define how the middleware will be implemented
-            }
-        }, is_string($type) ? (array) $type : $type);
-
-        return $this;
-    }
-
-    /**
-     * @param string $group
-     * @param string|callable|null $callback
-     * @return Router
-     */
-    public function group($group, $callback = null): Router
-    {
-        if (!empty($this->requestChain['route'])) {
-            $this->compile();
-        }
-
-        $group = (trim($group, '/') != '/' ? trim($group, '/') : '');
-
-        if (empty($callback)) {
-            $this->group = $group;
-            return $this;
-        }
-        $this->nested['base'] = $group;
-
-        if (empty($this->nested['group'])) {
-
-            $this->nested['group'] = $group;
-            $this->invert['group'] = 'placeholder';
-            $callback($this);
-            $this->nested['group'] = $group;
-            // return;
+            $this->groupChain[$this->counter]["after"] = $after;
         } else {
-            $callback($this);
-            $this->invert['group'] = "{$this->nested['group']}/{$group}";
-            return $this;
+
+            $this->requestChain['after'] = $after;
         }
 
-        $this->compile($remove = true);
         return $this;
     }
 
     /**
+     * Defines the namespace of the controller.
+     * 
      * @param string $namespace
-     * @param string|callable|null $callback
      * @return Router
      */
-    public function namespace($namespace, $callback = null): Router
+    public function namespace($namespace): Router
     {
-        if (!empty($this->requestChain['route'])) {
+        $this->namespace = $namespace;
+
+        return $this;
+    }
+
+    /**
+     * Defines the namespace of the middleware.
+     * 
+     * @param string $middleware
+     * @return Router
+     */
+    public function middleware($middleware): Router
+    {
+        $this->middleware = $middleware;
+
+        return $this;
+    }
+
+    /**
+     * Defines a group of routes that share the same middleware or URI.
+     * 
+     * @param string|callable|null $group
+     * @param callable|null $callback
+     * @return Router
+     */
+    public function group($group = "", $callback = null): Router
+    {
+        if (!empty($this->requestChain['route']) || $this->compiler == 'end') {
+
             $this->compile();
         }
 
-        if (empty($callback)) {
-            $this->namespace = $namespace;
-            unset($this->invert['namespace'], $this->nested['namespace'], $this->keepNamespace);
+        if (empty($group)) {
+
+            unset($this->group);
+
             return $this;
         }
 
-        if (!empty($this->nested['namespace'])) {
-            $this->keepNamespace = $this->nested['namespace'];
-            $this->nested['namespace'] = $namespace;
+        if (is_string($group)) {
+
+            $group = (trim($group, '/') != '/' ? trim($group, '/') : '');
+
+            if (empty($callback)) {
+
+                $this->group = $group;
+            }
+
+            if (!empty($callback) && is_callable($callback)) {
+
+                $this->compiler = 'start';
+                $callback($this);
+                $this->compiler = 'end';
+
+                for ($i = 0; $i < count($this->groupChain); $i++) {
+
+                    $this->groupChain[$i]['group'] = $group;
+                }
+            }
+
+            return $this;
         }
-        $this->nested['namespace'] = $namespace;
-        $callback($this);
-        $this->invert['namespace'] = true;
+
+        $this->compiler = 'start';
+        $group($this);
+        $this->compiler = 'end';
 
         return $this;
     }
 
     /**
-     * @param boolean $remove
      * @return void
      */
-    public function compile($remove = false): void
+    private function compile(): void
     {
-        if (!empty($this->requestChain)) {
+        if (!empty($this->compiler)) {
+
+            foreach ($this->groupChain as $group) {
+
+                if (!empty($group['route'])) {
+
+                    $this->newRoute(
+                        $group['methods'][0],
+                        $group['route'],
+                        $group['handler'],
+                        [
+                            "regex" => $group['regex'] ?? $this->requestChain['regex'] ?? null,
+                            "before" => $group['before'] ?? $this->requestChain['before'] ?? null,
+                            "after" => $group['after'] ?? $this->requestChain['after'] ?? null,
+                            "namespace" => $this->namespace ?? null,
+                            "middleware" => $this->middleware ?? null,
+                            "group" => $group['group'] ?? $this->group ?? null,
+                        ]
+                    );
+                }
+            }
+        }
+
+        if (!empty($this->requestChain['route'])) {
 
             $this->newRoute(
                 $this->requestChain['methods'],
@@ -306,48 +393,53 @@ final class Router extends Core
                     "regex" => $this->requestChain['regex'] ?? null,
                     "before" => $this->requestChain['before'] ?? null,
                     "after" => $this->requestChain['after'] ?? null,
-                    "namespace" => !empty($this->nested['namespace'])
-                        ? $this->nested['namespace']
-                        : (!empty($this->keepNamespace)
-                            ? $this->keepNamespace
-                            : $this->namespace ?? null),
-                    "group" => (!empty($this->invert['group']) && $this->invert['group'] != 'placeholder' && $this->invert['group'] != 'nested') ? $this->invert['group']
-                        : (!empty($this->nested['group']) ? $this->nested['group'] : ($this->group ?? null))
-
+                    "namespace" => $this->namespace ?? null,
+                    "middleware" => $this->middleware ?? null,
+                    "group" => $this->group ?? null
                 ]
             );
+        }
 
-            if (
-                !empty($this->invert['namespace'])
-                && !empty($this->keepNamespace)
-                && empty($this->nested['namespace'])
-            ) {
-                unset($this->keepNamespace);
-            }
+        unset($this->requestChain);
 
-            if (!empty($this->nested['group']) && $this->invert['group'] == 'nested') {
-                unset($this->nested['group']);
-            }
+        if ($this->compiler == 'end') {
 
-            if (!empty($this->invert['group']) && $this->invert['group'] != 'placeholder') {
-                $this->invert['group'] = 'nested';
-            }
-
-            if (!empty($this->invert['namespace'])) {
-                unset($this->nested['namespace'], $this->invert['namespace']);
-            }
-
-            unset($this->requestChain);
-            if ($remove) {
-                unset($this->nested['group'], $this->invert['group']);
-            }
-            return;
+            unset($this->groupChain);
         }
     }
 
+    /**
+     * Executes the route that matches the URI.
+     * 
+     * @return void
+     */
     public function run(): void
     {
         $this->compile();
         $this->execute();
+    }
+
+    /**
+     * @param mixed $name
+     * @param mixed $arguments
+     * @return void
+     */
+    public function __call($name, $arguments)
+    {
+        $debug = debug_backtrace();
+        $this->handleError($name, $debug[0]['line'], $debug[0]['file']);
+    }
+
+    /**
+     * @param mixed $name
+     * @return void
+     */
+    private function handleError($name, $line, $file)
+    {
+        $message = filter_var(strtoupper($name), FILTER_SANITIZE_STRIPPED) . " doesn't exist or is a private method. Error on line {$line} in {$file}.";
+
+        http_response_code(500);
+
+        trigger_error($message, E_USER_ERROR);
     }
 }

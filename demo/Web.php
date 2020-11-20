@@ -4,43 +4,103 @@ namespace SurerLoki\Router\Demo;
 
 class Web
 {
-    public function home($data)
+    public function home($req, $res, $server)
     {
-        echo "<h1>Web home</h1>";
+        $res->params([
+            'request' => $req
+        ]);
 
-        var_dump(
-            $data
-        );
-    }
-    public function user($data)
-    {
-        echo "<h1>Web user</h1>";
-
-        echo "<h2>Method: {$_SERVER['REQUEST_METHOD']}</h2>";
-
-        echo '<div class="left-align">';
-        echo "<h3 style='font-size: 2rem;'>Form Data</h3><br>";
-        foreach ($data as $key => $value) {
-            echo "<h3>{$key} => {$value}</h3><br>";
-        }
-        echo '</div>';
-    }
-
-    public function changeUser($data)
-    {
-        echo "<h1>Web change user</h1>";
-
-        var_dump(
-            $data
+        $res->render(
+            '/demo/pages/header.php',
+            '/demo/pages/nav.php',
+            '/demo/pages/footer.php',
         );
     }
 
-    public function admin($data)
+    public function route($req, $res, $server)
     {
-        echo "<h1>Web Admin</h1>";
+        $res->params([
+            'request' => $req,
+            'routes' => $server->list()
+        ]);
 
-        var_dump(
-            $data
+        $res->render(
+            '/demo/pages/header.php',
+            '/demo/pages/nav.php',
+            '/demo/pages/routes.php',
+            '/demo/pages/footer.php',
+        );
+    }
+
+    public function form($req, $res)
+    {
+        $res->params([
+            'request' => $req,
+        ]);
+
+        $res->render(
+            '/demo/pages/header.php',
+            '/demo/pages/nav.php',
+            '/demo/pages/form.php',
+            '/demo/pages/footer.php',
+        );
+    }
+
+    public function blog($req, $res)
+    {
+        $res->params([
+            'request' => $req,
+        ]);
+
+        $res->render(
+            '/demo/pages/header.php',
+            '/demo/pages/nav.php',
+            '/demo/pages/query.php',
+            '/demo/pages/footer.php',
+        );
+    }
+
+    public function spoofing($req, $res)
+    {
+        $res->params([
+            'request' => $req,
+        ]);
+
+        $res->render(
+            '/demo/pages/header.php',
+            '/demo/pages/nav.php',
+            '/demo/pages/spoofing.php',
+            '/demo/pages/footer.php',
+        );
+    }
+
+    public function info($req, $res, $server)
+    {
+        $res->params([
+            'request' => $req,
+            'response' => get_class_methods($res),
+            'server' => get_class_methods($server)
+        ]);
+
+        $res->render(
+            '/demo/pages/header.php',
+            '/demo/pages/nav.php',
+            '/demo/pages/info.php',
+            '/demo/pages/footer.php',
+        );
+    }
+
+    public function error($req, $res, $server)
+    {
+        $res->params([
+            'request' => $req,
+        ]);
+
+        $res->render(
+            '/demo/pages/header.php',
+            '/demo/pages/nav.php',
+            '/demo/pages/error.php',
+            '/demo/pages/footer.php',
         );
     }
 }

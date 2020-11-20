@@ -1,4 +1,7 @@
+.editorconfig
 composer.lock
 vendor
-.phpunit.result.cache
-.vscode
+
+# Test Cache
+.phpunit.cache
+coverage.xml

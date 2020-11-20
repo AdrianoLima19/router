@@ -9,11 +9,6 @@
       "email": "surerloki3379@gmail.com"
     }
   ],
-  "keywords": [
-    "Router",
-    "Route",
-    "Routes"
-  ],
   "require": {
     "php": "^7.3"
   },
