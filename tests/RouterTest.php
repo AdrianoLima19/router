@@ -24,8 +24,8 @@ final class RouterTest extends TestCase
      * @covers \SurerLoki\Router\Router
      * @covers \SurerLoki\Router\Core
      * @covers \SurerLoki\Router\Request
-     * @uses \SurerLoki\Router\Response
-     * @uses \SurerLoki\Router\Dispatch
+     * @covers \SurerLoki\Router\Response
+     * @covers \SurerLoki\Router\Dispatch
      * @runInSeparateProcess
      */
     public function testRequestParams()
@@ -55,9 +55,8 @@ final class RouterTest extends TestCase
      * @covers \SurerLoki\Router\Router
      * @covers \SurerLoki\Router\Core
      * @covers \SurerLoki\Router\Request
-     * @uses \SurerLoki\Router\Response
-     * @covers \SurerLoki\Router\Response::send
-     * @uses \SurerLoki\Router\Dispatch
+     * @covers \SurerLoki\Router\Response
+     * @covers \SurerLoki\Router\Dispatch
      * @runInSeparateProcess
      */
     public function testResponseSend()
@@ -80,9 +79,8 @@ final class RouterTest extends TestCase
      * @covers \SurerLoki\Router\Router
      * @covers \SurerLoki\Router\Core
      * @covers \SurerLoki\Router\Request
-     * @uses \SurerLoki\Router\Response
-     * @covers \SurerLoki\Router\Response::json
-     * @uses \SurerLoki\Router\Dispatch
+     * @covers \SurerLoki\Router\Response
+     * @covers \SurerLoki\Router\Dispatch
      * @runInSeparateProcess
      */
     public function testResponseJson()
@@ -105,9 +103,8 @@ final class RouterTest extends TestCase
      * @covers \SurerLoki\Router\Router
      * @covers \SurerLoki\Router\Core
      * @covers \SurerLoki\Router\Request
-     * @uses \SurerLoki\Router\Response
-     * @covers \SurerLoki\Router\Response::send
-     * @uses \SurerLoki\Router\Dispatch
+     * @covers \SurerLoki\Router\Response
+     * @covers \SurerLoki\Router\Dispatch
      * @runInSeparateProcess
      * @runInSeparateProcess
      */
@@ -134,9 +131,8 @@ final class RouterTest extends TestCase
      * @covers \SurerLoki\Router\Router
      * @covers \SurerLoki\Router\Core
      * @covers \SurerLoki\Router\Request
-     * @uses \SurerLoki\Router\Response
-     * @covers \SurerLoki\Router\Response::send
-     * @uses \SurerLoki\Router\Dispatch
+     * @covers \SurerLoki\Router\Response
+     * @covers \SurerLoki\Router\Dispatch
      * @runInSeparateProcess
      * @runInSeparateProcess
      */
@@ -163,9 +159,8 @@ final class RouterTest extends TestCase
      * @covers \SurerLoki\Router\Router
      * @covers \SurerLoki\Router\Core
      * @covers \SurerLoki\Router\Request
-     * @uses \SurerLoki\Router\Response
-     * @covers \SurerLoki\Router\Response::send
-     * @uses \SurerLoki\Router\Dispatch
+     * @covers \SurerLoki\Router\Response
+     * @covers \SurerLoki\Router\Dispatch
      * @runInSeparateProcess
      * @runInSeparateProcess
      */
@@ -192,9 +187,8 @@ final class RouterTest extends TestCase
      * @covers \SurerLoki\Router\Router
      * @covers \SurerLoki\Router\Core
      * @covers \SurerLoki\Router\Request
-     * @uses \SurerLoki\Router\Response
-     * @covers \SurerLoki\Router\Response::send
-     * @uses \SurerLoki\Router\Dispatch
+     * @covers \SurerLoki\Router\Response
+     * @covers \SurerLoki\Router\Dispatch
      * @runInSeparateProcess
      * @runInSeparateProcess
      */
@@ -218,9 +212,8 @@ final class RouterTest extends TestCase
      * @covers \SurerLoki\Router\Router
      * @covers \SurerLoki\Router\Core
      * @covers \SurerLoki\Router\Request
-     * @uses \SurerLoki\Router\Response
-     * @covers \SurerLoki\Router\Response::send
-     * @uses \SurerLoki\Router\Dispatch
+     * @covers \SurerLoki\Router\Response
+     * @covers \SurerLoki\Router\Dispatch
      * @runInSeparateProcess
      */
     public function testGroupOfUris()
@@ -245,9 +238,8 @@ final class RouterTest extends TestCase
      * @covers \SurerLoki\Router\Router
      * @covers \SurerLoki\Router\Core
      * @covers \SurerLoki\Router\Request
-     * @uses \SurerLoki\Router\Response
-     * @covers \SurerLoki\Router\Response::send
-     * @uses \SurerLoki\Router\Dispatch
+     * @covers \SurerLoki\Router\Response
+     * @covers \SurerLoki\Router\Dispatch
      * @runInSeparateProcess
      */
     public function testSecondRouteFromGroup()
@@ -275,9 +267,8 @@ final class RouterTest extends TestCase
      * @covers \SurerLoki\Router\Router
      * @covers \SurerLoki\Router\Core
      * @covers \SurerLoki\Router\Request
-     * @uses \SurerLoki\Router\Response
-     * @covers \SurerLoki\Router\Response::send
-     * @uses \SurerLoki\Router\Dispatch
+     * @covers \SurerLoki\Router\Response
+     * @covers \SurerLoki\Router\Dispatch
      * @runInSeparateProcess
      */
     public function testThirdRouteFromGroup()
@@ -308,9 +299,8 @@ final class RouterTest extends TestCase
      * @covers \SurerLoki\Router\Router
      * @covers \SurerLoki\Router\Core
      * @covers \SurerLoki\Router\Request
-     * @uses \SurerLoki\Router\Response
-     * @covers \SurerLoki\Router\Response::send
-     * @uses \SurerLoki\Router\Dispatch
+     * @covers \SurerLoki\Router\Response
+     * @covers \SurerLoki\Router\Dispatch
      * @runInSeparateProcess
      */
     public function testGroupOfMiddlewares()
@@ -343,9 +333,8 @@ final class RouterTest extends TestCase
      * @covers \SurerLoki\Router\Router
      * @covers \SurerLoki\Router\Core
      * @covers \SurerLoki\Router\Request
-     * @uses \SurerLoki\Router\Response
-     * @covers \SurerLoki\Router\Response::send
-     * @uses \SurerLoki\Router\Dispatch
+     * @covers \SurerLoki\Router\Response
+     * @covers \SurerLoki\Router\Dispatch
      * @runInSeparateProcess
      */
     public function testRouteMiddlewareInsideGroupOfMiddlewares()
@@ -380,9 +369,8 @@ final class RouterTest extends TestCase
      * @covers \SurerLoki\Router\Router
      * @covers \SurerLoki\Router\Core
      * @covers \SurerLoki\Router\Request
-     * @uses \SurerLoki\Router\Response
-     * @covers \SurerLoki\Router\Response::send
-     * @uses \SurerLoki\Router\Dispatch
+     * @covers \SurerLoki\Router\Response
+     * @covers \SurerLoki\Router\Dispatch
      * @runInSeparateProcess
      */
     public function testGroupOfAfterMiddleware()
@@ -415,9 +403,8 @@ final class RouterTest extends TestCase
      * @covers \SurerLoki\Router\Router
      * @covers \SurerLoki\Router\Core
      * @covers \SurerLoki\Router\Request
-     * @uses \SurerLoki\Router\Response
-     * @covers \SurerLoki\Router\Response::send
-     * @uses \SurerLoki\Router\Dispatch
+     * @covers \SurerLoki\Router\Response
+     * @covers \SurerLoki\Router\Dispatch
      * @runInSeparateProcess
      */
     public function testRouteAfterMiddlewareInsideGroupOfMiddlewares()

@@ -10,8 +10,8 @@ final class AnyMethodTest extends TestCase
      * @covers \SurerLoki\Router\Router
      * @covers \SurerLoki\Router\Core
      * @covers \SurerLoki\Router\Request
-     * @uses \SurerLoki\Router\Response
-     * @uses \SurerLoki\Router\Dispatch
+     * @covers \SurerLoki\Router\Response
+     * @covers \SurerLoki\Router\Dispatch
      */
     public function testAnyRouteMethodGet()
     {
@@ -32,8 +32,8 @@ final class AnyMethodTest extends TestCase
      * @covers \SurerLoki\Router\Router
      * @covers \SurerLoki\Router\Core
      * @covers \SurerLoki\Router\Request
-     * @uses \SurerLoki\Router\Response
-     * @uses \SurerLoki\Router\Dispatch
+     * @covers \SurerLoki\Router\Response
+     * @covers \SurerLoki\Router\Dispatch
      */
     public function testAnyRouteMethodPost()
     {
@@ -54,8 +54,8 @@ final class AnyMethodTest extends TestCase
      * @covers \SurerLoki\Router\Router
      * @covers \SurerLoki\Router\Core
      * @covers \SurerLoki\Router\Request
-     * @uses \SurerLoki\Router\Response
-     * @uses \SurerLoki\Router\Dispatch
+     * @covers \SurerLoki\Router\Response
+     * @covers \SurerLoki\Router\Dispatch
      */
     public function testAnyRouteMethodPut()
     {
@@ -76,8 +76,8 @@ final class AnyMethodTest extends TestCase
      * @covers \SurerLoki\Router\Router
      * @covers \SurerLoki\Router\Core
      * @covers \SurerLoki\Router\Request
-     * @uses \SurerLoki\Router\Response
-     * @uses \SurerLoki\Router\Dispatch
+     * @covers \SurerLoki\Router\Response
+     * @covers \SurerLoki\Router\Dispatch
      */
     public function testAnyRouteMethodPatch()
     {
@@ -98,8 +98,8 @@ final class AnyMethodTest extends TestCase
      * @covers \SurerLoki\Router\Router
      * @covers \SurerLoki\Router\Core
      * @covers \SurerLoki\Router\Request
-     * @uses \SurerLoki\Router\Response
-     * @uses \SurerLoki\Router\Dispatch
+     * @covers \SurerLoki\Router\Response
+     * @covers \SurerLoki\Router\Dispatch
      */
     public function testAnyRouteMethodDelete()
     {
@@ -120,8 +120,8 @@ final class AnyMethodTest extends TestCase
      * @covers \SurerLoki\Router\Router
      * @covers \SurerLoki\Router\Core
      * @covers \SurerLoki\Router\Request
-     * @uses \SurerLoki\Router\Response
-     * @uses \SurerLoki\Router\Dispatch
+     * @covers \SurerLoki\Router\Response
+     * @covers \SurerLoki\Router\Dispatch
      */
     public function testAnyRouteMethodOption()
     {

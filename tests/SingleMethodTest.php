@@ -10,8 +10,8 @@ final class SingleMethodTest extends TestCase
      * @covers \SurerLoki\Router\Router
      * @covers \SurerLoki\Router\Core
      * @covers \SurerLoki\Router\Request
-     * @uses \SurerLoki\Router\Response
-     * @uses \SurerLoki\Router\Dispatch
+     * @covers \SurerLoki\Router\Response
+     * @covers \SurerLoki\Router\Dispatch
      */
     public function testMethodGet()
     {
@@ -32,8 +32,8 @@ final class SingleMethodTest extends TestCase
      * @covers \SurerLoki\Router\Router
      * @covers \SurerLoki\Router\Core
      * @covers \SurerLoki\Router\Request
-     * @uses \SurerLoki\Router\Response
-     * @uses \SurerLoki\Router\Dispatch
+     * @covers \SurerLoki\Router\Response
+     * @covers \SurerLoki\Router\Dispatch
      */
     public function testMethodPost()
     {
@@ -54,8 +54,8 @@ final class SingleMethodTest extends TestCase
      * @covers \SurerLoki\Router\Router
      * @covers \SurerLoki\Router\Core
      * @covers \SurerLoki\Router\Request
-     * @uses \SurerLoki\Router\Response
-     * @uses \SurerLoki\Router\Dispatch
+     * @covers \SurerLoki\Router\Response
+     * @covers \SurerLoki\Router\Dispatch
      */
     public function testMethodPut()
     {
@@ -76,8 +76,8 @@ final class SingleMethodTest extends TestCase
      * @covers \SurerLoki\Router\Router
      * @covers \SurerLoki\Router\Core
      * @covers \SurerLoki\Router\Request
-     * @uses \SurerLoki\Router\Response
-     * @uses \SurerLoki\Router\Dispatch
+     * @covers \SurerLoki\Router\Response
+     * @covers \SurerLoki\Router\Dispatch
      */
     public function testMethodPatch()
     {
@@ -98,8 +98,8 @@ final class SingleMethodTest extends TestCase
      * @covers \SurerLoki\Router\Router
      * @covers \SurerLoki\Router\Core
      * @covers \SurerLoki\Router\Request
-     * @uses \SurerLoki\Router\Response
-     * @uses \SurerLoki\Router\Dispatch
+     * @covers \SurerLoki\Router\Response
+     * @covers \SurerLoki\Router\Dispatch
      */
     public function testMethodDelete()
     {
@@ -120,8 +120,8 @@ final class SingleMethodTest extends TestCase
      * @covers \SurerLoki\Router\Router
      * @covers \SurerLoki\Router\Core
      * @covers \SurerLoki\Router\Request
-     * @uses \SurerLoki\Router\Response
-     * @uses \SurerLoki\Router\Dispatch
+     * @covers \SurerLoki\Router\Response
+     * @covers \SurerLoki\Router\Dispatch
      */
     public function testMethodOptions()
     {

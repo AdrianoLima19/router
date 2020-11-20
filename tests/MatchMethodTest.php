@@ -10,8 +10,8 @@ final class MatchMethodTest extends TestCase
      * @covers \SurerLoki\Router\Router
      * @covers \SurerLoki\Router\Core
      * @covers \SurerLoki\Router\Request
-     * @uses \SurerLoki\Router\Response
-     * @uses \SurerLoki\Router\Dispatch
+     * @covers \SurerLoki\Router\Response
+     * @covers \SurerLoki\Router\Dispatch
      */
     public function testAnyValidMatchMethod()
     {
@@ -34,8 +34,8 @@ final class MatchMethodTest extends TestCase
      * @covers \SurerLoki\Router\Router
      * @covers \SurerLoki\Router\Core
      * @covers \SurerLoki\Router\Request
-     * @uses \SurerLoki\Router\Response
-     * @uses \SurerLoki\Router\Dispatch
+     * @covers \SurerLoki\Router\Response
+     * @covers \SurerLoki\Router\Dispatch
      */
     public function testMatchWithGetMethod()
     {
@@ -58,8 +58,8 @@ final class MatchMethodTest extends TestCase
      * @covers \SurerLoki\Router\Router
      * @covers \SurerLoki\Router\Core
      * @covers \SurerLoki\Router\Request
-     * @uses \SurerLoki\Router\Response
-     * @uses \SurerLoki\Router\Dispatch
+     * @covers \SurerLoki\Router\Response
+     * @covers \SurerLoki\Router\Dispatch
      */
     public function testMatchWithPostMethod()
     {
@@ -82,8 +82,8 @@ final class MatchMethodTest extends TestCase
      * @covers \SurerLoki\Router\Router
      * @covers \SurerLoki\Router\Core
      * @covers \SurerLoki\Router\Request
-     * @uses \SurerLoki\Router\Response
-     * @uses \SurerLoki\Router\Dispatch
+     * @covers \SurerLoki\Router\Response
+     * @covers \SurerLoki\Router\Dispatch
      */
     public function testMatchWithPutMethod()
     {
@@ -106,8 +106,8 @@ final class MatchMethodTest extends TestCase
      * @covers \SurerLoki\Router\Router
      * @covers \SurerLoki\Router\Core
      * @covers \SurerLoki\Router\Request
-     * @uses \SurerLoki\Router\Response
-     * @uses \SurerLoki\Router\Dispatch
+     * @covers \SurerLoki\Router\Response
+     * @covers \SurerLoki\Router\Dispatch
      */
     public function testMatchWithPatchMethod()
     {
@@ -130,8 +130,8 @@ final class MatchMethodTest extends TestCase
      * @covers \SurerLoki\Router\Router
      * @covers \SurerLoki\Router\Core
      * @covers \SurerLoki\Router\Request
-     * @uses \SurerLoki\Router\Response
-     * @uses \SurerLoki\Router\Dispatch
+     * @covers \SurerLoki\Router\Response
+     * @covers \SurerLoki\Router\Dispatch
      */
     public function testMatchWithDeleteMethod()
     {
@@ -154,8 +154,8 @@ final class MatchMethodTest extends TestCase
      * @covers \SurerLoki\Router\Router
      * @covers \SurerLoki\Router\Core
      * @covers \SurerLoki\Router\Request
-     * @uses \SurerLoki\Router\Response
-     * @uses \SurerLoki\Router\Dispatch
+     * @covers \SurerLoki\Router\Response
+     * @covers \SurerLoki\Router\Dispatch
      */
     public function testMatchWithOptionMethod()
     {
@@ -178,8 +178,8 @@ final class MatchMethodTest extends TestCase
      * @covers \SurerLoki\Router\Router
      * @covers \SurerLoki\Router\Core
      * @covers \SurerLoki\Router\Request
-     * @uses \SurerLoki\Router\Response
-     * @uses \SurerLoki\Router\Dispatch
+     * @covers \SurerLoki\Router\Response
+     * @covers \SurerLoki\Router\Dispatch
      */
     public function testInvalidMatchMethod()
     {
