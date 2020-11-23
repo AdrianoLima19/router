@@ -103,4 +103,9 @@ class Web
             '/demo/pages/footer.php',
         );
     }
+
+    public function testController()
+    {
+        echo 'web test';
+    }
 }
