@@ -28,7 +28,7 @@ The router is a simple object-oriented library to handle HTTP requests.
 ## Requirements
 
 - <a href="https://getcomposer.org/doc/01-basic-usage.md#package-versions" target="_blank">Composer</a>
-- <a href="https://www.php.net/downloads" target="_blank">PHP</a> ^7.3
+- <a href="https://www.php.net/downloads" target="_blank">PHP</a> ^7.4
 - [Rewrite URL](#configuring-htaccess)
 
 ## Installation
@@ -36,7 +36,7 @@ The router is a simple object-oriented library to handle HTTP requests.
 Installation is available via composer:
 
 ```sh
-composer require surerloki/router 1.x
+composer require surerloki/router 2.x
 ```
 
 ## Demo
