@@ -108,4 +108,9 @@ class Web
     {
         echo 'web test';
     }
+
+    public function testFallback()
+    {
+        echo 'fallback test';
+    }
 }

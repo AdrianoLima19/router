@@ -154,6 +154,66 @@ final class RouterMethodsTest extends TestCase
 
     /** 
      * @test 
+     * @testdox Test fallback with controller
+     * @covers \SurerLoki\Router\Router
+     * @covers \SurerLoki\Router\Core
+     * @covers \SurerLoki\Router\Request
+     * @covers \SurerLoki\Router\Response
+     * @covers \SurerLoki\Router\Dispatch
+     */
+    public function testFallbackController()
+    {
+        $_SERVER['SCRIPT_NAME'] = '/index.php';
+        $_SERVER['REQUEST_URI'] = '/unknow';
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+
+        $router = new \SurerLoki\Router\Router();
+
+        $router->namespace('SurerLoki\Router\Demo');
+
+        $router->get('/', function () {
+            echo 'out';
+        });
+
+        $router->fallback('Web:testFallback');
+
+        $router->run();
+
+        $this->expectOutputString('fallback test');
+    }
+
+    /** 
+     * @test 
+     * @testdox Test invalid fallback controller
+     * @covers \SurerLoki\Router\Router
+     * @covers \SurerLoki\Router\Core
+     * @covers \SurerLoki\Router\Request
+     * @covers \SurerLoki\Router\Response
+     * @covers \SurerLoki\Router\Dispatch
+     */
+    public function testInvalidFallbackController()
+    {
+        $this->expectError();
+
+        $_SERVER['SCRIPT_NAME'] = '/index.php';
+        $_SERVER['REQUEST_URI'] = '/unknow';
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+
+        $router = new \SurerLoki\Router\Router();
+
+        $router->namespace('SurerLoki\Router\Demo');
+
+        $router->get('/', function () {
+            echo 'out';
+        });
+
+        $router->fallback('invalid:testFallback');
+
+        $router->run();
+    }
+
+    /** 
+     * @test 
      * @testdox Test a 404 without a fallback route.
      * @covers \SurerLoki\Router\Router
      * @covers \SurerLoki\Router\Core
@@ -576,7 +636,60 @@ final class RouterMethodsTest extends TestCase
      * @covers \SurerLoki\Router\Request
      * @covers \SurerLoki\Router\Response
      * @covers \SurerLoki\Router\Dispatch
+     * @runInSeparateProcess
      */
+    public function testRouteMethod()
+    {
+        $_SERVER['SCRIPT_NAME'] = '/index.php';
+        $_SERVER['REQUEST_URI'] = '/user';
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+
+        $router = new \SurerLoki\Router\Router();
+
+        $router->get('/home', function ($req) {
+            echo 'home';
+        });
+        $router->get('/user', function ($req, $res, $server) {
+            $server->route('/home');
+        });
+
+        $router->run();
+
+        $this->expectOutputString('home');
+    }
+
+    /** 
+     * @test 
+     * @testdox Test route method with a invalid path
+     * @covers \SurerLoki\Router\Router
+     * @covers \SurerLoki\Router\Core
+     * @covers \SurerLoki\Router\Request
+     * @covers \SurerLoki\Router\Response
+     * @covers \SurerLoki\Router\Dispatch
+     * @runInSeparateProcess
+     */
+    public function testInvalidRouteMethod()
+    {
+        $_SERVER['SCRIPT_NAME'] = '/index.php';
+        $_SERVER['REQUEST_URI'] = '/user';
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+
+        $router = new \SurerLoki\Router\Router();
+
+        $router->get('/home', function ($req) {
+            echo 'home';
+        });
+        $router->get('/user', function ($req, $res, $server) {
+            $server->route('/unknow');
+        });
+
+        $router->fallback(function () {
+            echo 'fallback';
+        });
+        $router->run();
+
+        $this->expectOutputString('fallback');
+    }
 
     /**
      * @test 
