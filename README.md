@@ -3,6 +3,8 @@
 [![license](https://img.shields.io/github/license/AdrianoLima19/router)](https://github.com/AdrianoLima19/router/blob/master/LICENSE)
 ![php](https://img.shields.io/packagist/php-v/surerloki/router)
 ![version](https://img.shields.io/packagist/v/surerloki/router)
+![CircleCI](https://img.shields.io/circleci/build/github/AdrianoLima19/router)
+![Codecov](https://img.shields.io/codecov/c/gh/AdrianoLima19/router)
 
 The router is a simple object-oriented library to handle HTTP requests.
 
