@@ -13,12 +13,10 @@ parsers:
       loop: yes
       method: no
       macro: no
-      
 ignore:
   - "*/tests/*"
   - "*/demo/*"
   - "*/vendor/*"
-  
 comment:
   layout: "reach,diff,flags,files,footer"
   behavior: default

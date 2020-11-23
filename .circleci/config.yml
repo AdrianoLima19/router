@@ -37,7 +37,6 @@ jobs:
           key: v1-dependencies-{{ checksum "composer.json" }}
           paths:
             - ./vendor
-      
 
       # run tests with phpunit or codecept
       - run: ./vendor/bin/phpunit --coverage-clover coverage.xml

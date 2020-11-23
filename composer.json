@@ -9,13 +9,8 @@
       "email": "surerloki3379@gmail.com"
     }
   ],
-  "keywords": [
-    "Router",
-    "Route",
-    "Routes"
-  ],
   "require": {
-    "php": "^7.3"
+    "php": "^7.4"
   },
   "autoload": {
     "psr-4": {

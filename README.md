@@ -6,44 +6,51 @@
 ![CircleCI](https://img.shields.io/circleci/build/github/AdrianoLima19/router)
 ![Codecov](https://img.shields.io/codecov/c/gh/AdrianoLima19/router)
 
-Router is a simple object-oriented library to handle HTTP routes.
+The router is a simple object-oriented library to handle HTTP requests.
 
 ## Features
 
-- Can be used with all [HTTP methods](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods)
-- [Basic Usage](#basic-usage)
-- [Single requests methods as `get()`, `post()`, `put()`, …](#route-methods)
-- [Dynamic routing](#route-parameters)
-- [Regular Expression Constraints](#regular-expression-constraints)
-- [Middleware](#middleware)
-- [Fallback Route](#fallback-route)
-- [Form Spoofing](#form-method-spoofing)
+- #### [Router](#router-methods)
+  - [Basic Usage](#basic-usage)
+  - [Routing methods](#routing-methods)
+  - [Dynamic Routing](#dynamic-routes)
+  - [Regular Expression Constraints](#regular-expression-constraints)
+  - [Middleware](#middleware)
+  - [Groups](#groups)
+  - [Fallback Route](#fallback-route)
+  - [Form Spoofing](#)
+- #### [Request](#request-methods)
+  - [Properties](#request-properties)
+  - [Data](#request-data)
+- #### [Response](#response-methods)
+- #### [Redirect](#redirect-route)
 
 ## Requirements
 
-<ul style="list-style:circle;padding-left:1.5rem;margin-left:0;">
-<li><a href="https://getcomposer.org/doc/01-basic-usage.md#package-versions" target="_blank">Composer</a></li>
-<li><a href="https://www.php.net/downloads" target="_blank">PHP</a> 7.3^</li>
-<li><a href="#enabling-htaccess">Rewrite URL</a></li>
-</ul>
+- <a href="https://getcomposer.org/doc/01-basic-usage.md#package-versions" target="_blank">Composer</a>
+- <a href="https://www.php.net/downloads" target="_blank">PHP</a> ^7.3
+- [Rewrite URL](#configuring-htaccess)
 
 ## Installation
 
-Installation is available via Composer:
-
-```json
-"surerloki/router": "1.x"
-```
-
-or run
+Installation is available via composer:
 
 ```sh
 composer require surerloki/router 1.x
 ```
 
-## Enabling htaccess
+## Demo
 
-On the root project folder create a .htaccess file and add the following commands:
+Open the terminal on the project root folder and execute the commands below, after that the demo server will be available at <a href="http://localhost:8081" target="_blank">http://localhost:8081</a>:
+
+```sh
+cd vendor/surerloki/router/demo
+php -S localhost:8081
+```
+
+## Configuring the htaccess
+
+In the project's root folder, create an .htaccess file and add the following commands:
 
 ```apache
 <IfModule mod_rewrite.c>
@@ -53,7 +60,7 @@ On the root project folder create a .htaccess file and add the following command
 </IfModule>
 ```
 
-Now in the public folder create another .htaccess and add the following commands just substituting the project_folder for the actual project folder:
+Now, in the public folder, create another .htaccess and add the following commands, just replacing the `project_folder` with the name of the project folder:
 
 ```apache
 <IfModule mod_rewrite.c>
@@ -66,9 +73,11 @@ Now in the public folder create another .htaccess and add the following commands
 </IfModule>
 ```
 
-## Basic Usage
+## Router Methods
 
-#### Basic Routing
+### Basic Usage
+
+#### Routing
 
 The route definition takes the following structure:
 
@@ -80,209 +89,249 @@ $router->method($route, $handler);
 Where:
 
 - \$router is an instance of Router.
-- method is an [HTTP request](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods).
+- method is an avaliable [routing method](#routing-methods).
 - \$route is a path on the server.
 - \$callback is executed when the route is matched.
-- \$handler execute the controller when the route is matched.
+- \$handler executes the controller when the route is matched.
 
-#### Basic Structure
+#### Structure
 
-The following example illustrate defining a basic route structure:
+The following example illustrates a basic routing structure:
 
 ```php
 // Require autoload
 require __DIR__ . "../vendor/autoload.php";
 
-// Create Router class
+// Creates an instance of the Router
 $router = new \SurerLoki\Router\Router();
 
-// Respond to a GET request to the / route
+// Define the namespaces and group name.
+$router->namespace('Controller')
+    ->middleware('Middleware')
+    ->group();
+
+// Respond to a GET request in the / route
 $router->get('/', function () {
     echo "Hello World!";
 });
 
-// Respond to a POST request to the /user route
-$router->post('/user', function () {
-    echo "POST requested to /user";
+// Respond to a POST request in the /user route
+$router->post('/user', function ($req, $res) {
+    $res->send("POST requested to /user");
 });
 
-// Respond to a PUT request to the /user/{id} route
-$router->put('/user/{id}', function ($data) {
-    echo "PUT requested to user {$data['id']}";
+// Respond to a PUT request in the /user/{id} route
+$router->put('/user/{id}', function ($req, $res) {
+    $res->send("PUT requested to user {$req->params->id}");
 });
 
-// Respond to a DELETE request to the /user/{id} route
-$router->delete('/user/{id}', function ($data) {
-    echo "DELETE requested to user {$data['id']}";
+// Respond to a DELETE request in the /user/{id} route
+$router->delete('/user/{id}', function ($req, $res) {
+    $res->send("DELETE requested to user {$req->params->id}");
+});
+
+// Respond to ANY request in the /table/{user} route
+$router->any('/table/{user}', function ($req, $res) {
+    $res->send("{$req->method} requested to /table/{$req->params->id}");
 });
 
 // Will be executed when no other route matches the request
-$router->fallback(function ($data) {
-    // Fallback aways return a $data['error']
-    echo "ERROR {$data['error']}";
+$router->fallback(function ($req, $res) {
+    // Fallback aways have a $req->error
+    $res->send("ERROR {$req->error}");
 });
 
 // Executes the routes
 $router->run()
 ```
 
-## Route Methods
+#### Start the server
 
-The router allows the registered route to respond any HTTP request method:
+Open the terminal on the project root folder and execute the commands below, after that the server will be available at <a href="http://localhost:8080" target="_blank">http://localhost:8080</a>:
 
-```php
-$router->get('/route', function (){});
-$router->post('/route', function (){});
-$router->put('/route', function (){});
-$router->patch('/route', function (){});
-$router->delete('/route', function (){});
-$router->options('/route', function (){});
+```bash
+cd public
+php -S localhost:8080
 ```
 
-But if the registered route needs to respond to multiple methods `match` can be used:
+### Routing Methods
+
+The router allows registering routes that respond to any HTTP verb:
+
+```php
+$router->get('/', function (){});
+$router->head('/', function (){});
+$router->post('/', function (){});
+$router->put('/', function (){});
+$router->patch('/', function (){});
+$router->delete('/', function (){});
+$router->options('/', function (){});
+```
+
+But if the registered route needs to respond to several methods, `match` can be used:
 
 ```php
 $router->match(['get', 'post', 'put'], "/", function () {
-    // code ...
+    // code...
 });
 ```
 
-Or `any` can be used if the registered route needs to respond to all HTTP methods:
+Or `any` can be used if the registered route needs to respond to all HTTP verbs:
 
 ```php
 $router->any("/", function () {
-    // code ...
+    // code...
 });
 ```
 
-## Route Parameters
+### Dynamic Routes
 
-Sometimes the route needs to capture segmets of the URI:
+When defining routes, it is sometimes necessary to obtain parameters from them:
 
 ```php
-$router->get("'posts/{post}/comments/{comment}", function ($data) {
+$router->get("'posts/{post}/comments/{comment}", function ($req) {
     /**
-     * $data['post']
-     * $data['comment']
+     * $req->params->post
+     * $req->params->comment
      */
-    // code ...
+    // code...
 });
 ```
 
 ### Regular Expression Constraints
 
-The `where` method accepts the parameter and a regex defining how the parameter should be constrained:
+The `where` method accepts the name of the parameter and a regular expression defining how the parameter should be constrained:
 
 ```php
-get('user/{name}', function ($data) {
-    //
-})->where('name', '[a-zA-Z]+');
+get('user/{name}', function ($req) {
+    // code...
+})->where(['name' => '[a-zA-Z]+']);
 
-get('user/{id}', function ($data) {
-    //
-})->where('id', '[0-9]+');
+get('user/{id}', function ($req) {
+    // code...
+})->where(['id' => '[0-9]+']);
 
-get('user/{id}/{name}', function ($data) {
-    //
+get('user/{id}/{name}', function ($req) {
+    // code...
 })->where(['id' => '[0-9]+', 'name' => '[a-zA-Z]+']);
-```
-
-### Namespaces
-
-Assign the same namespace to controllers using the namespace method:
-
-```php
-$router->namespace("SurerLoki\Router\Demo");
-$router->get($route, 'Web:route'); // Namespace\Path\To\Web -> route()
-```
-
-### Groups
-
-The `group` method can be used to nest urls that have the same starting path
-
-```php
-$router->group("/admin");
-$router->get('/dash', 'Web:route'); // /admin/dash
-$router->get('/report', 'Web:route'); // /admin/report
-$router->get('/user', 'Web:route'); // /admin/user
-```
-
-### Nested Groups
-
-Groups can be nested with other groups and/or sets of urls
-
-```php
-// set the group
-$router->group('/user');
-
-$router->get('/{name}', $handler); // /user/{name}
-
-$router->group("/admin", function () use ($router) {
-    // the nested group will be only applied here
-    $router->get('/dash', $handler); // /admin/dash
-
-    $router->group("/user", function () use ($router) {
-        $router->get('/table', $handler); // /admin/user/table
-    });
-
-    $router->get('/info', $handler); // /admin/info
-});
-
-// get the last applied group if any
-$router->get('/{id}', $handler); // /user/{id}
-
 ```
 
 ### Middleware
 
-The `before` method will be executed before the route handling is processed.
+The middleware `before` will be executed before the route handling is processed:
 
 ```php
 $router->get('/user', function () {
-    // code ...
+    // code...
 })->before(function () {
-    // code ...
+    // code...
 });
 ```
 
-The `after` method will be executed after the route handling is processed.
+The middleware `after` will be executed after the route handling is processed:
 
 ```php
 $router->get('/user', function () {
-    // code ...
+    // code...
 })->after(function () {
-    // code ...
+    // code...
 });
 ```
 
-Both middlewares can be hooked to a route
+Both middleware methods can be linked to a route:
 
 ```php
 $router->get('/user', function () {
-    // code ...
+    // code...
 })->before(function () {
-    // code ...
+    // code...
 })->after(function () {
-    // code ...
+    // code...
 });
 ```
 
-### Redirect
+### Groups
 
-If the route redirects to another URI, the method `redirect` provides a convenient shortcut for performing a simple redirect:
+When only a route is assigned in the group method, all the routes defined below will belong to this group, to remove or change the group, just redefine the method leaving it empty or giving it a new value:
 
 ```php
-$router->get("/redirect", function () {
-    $router->redirect('/');
+$router->group('/admin');
+
+$router->get('/dash', function () { // /admin/dash
+    // code...
+});
+$router->get('/option', function () { // /admin/option
+    // code...
+});
+
+$router->group('/user');
+
+$router->get('/shop', function () { // /user/blog
+    // code...
+});
+
+$router->group();
+
+$router->get('/blog', function () { // /blog
+    // code...
 });
 ```
 
-The `route` can be used to redirect the route and customize the status code:
+When the `group` method receives a route and a callback, only the routes defined inside the method will be affected:
 
 ```php
-$router->get("/redirect-to-login", function () {
-    $router->route('/login', 301);
+$router->group('/user');
+
+$router->group('/admin', function () use ($router) {
+
+    $router->get('/dash', function () { // /admin/dash
+        // code...
+    });
 });
+
+$router->get('/panel', function () { // /user/panel
+
+$router->group();
+
+$router->group('/admin', function () use ($router) {
+
+    $router->get('/option', function () { // /admin/option
+        // code...
+    });
+});
+
+$router->get('/blog', function () { // /blog
+```
+
+The method `group` can also share attributes across a large number of routes without needing to define those attributes on each individual route.
+
+```php
+// All routes inside this callback will have the same middleware method.
+$router->group('/admin', function () use ($router) {
+
+    $router->get('/dash', function () { // /admin/dash
+        // code...
+    });
+    $router->get('/option', function () { // /admin/option
+        // code...
+    });
+})->before(function () {
+  // code...
+});
+
+$router->group(function () use ($router) {
+
+    $router->get('/user/{id}', function () { // /admin/dash
+        // code...
+    });
+    /**
+      * If the route and the callback have the same methods,
+      * the method on the route takes precedence.
+      */
+    $router->get('/blog/{id}', function () { // /admin/dash
+        // code...
+    })->where(['id' => '[a-zA-Z0-9]+']);
+})->where(['id' => '[0-9]+']);
 ```
 
 ### Fallback Route
@@ -290,9 +339,9 @@ $router->get("/redirect-to-login", function () {
 The `fallback` method will be executed when no other route matches the incoming request:
 
 ```php
-$router->fallback(function ($data) {
-    // $data['error']
-    // code ...
+$router->fallback(function ($req) {
+    // The fallback route will always have a $req->error which is an HTTP error code
+    // code...
 });
 ```
 
@@ -306,6 +355,139 @@ When defining PUT, PATCH or DELETE routes that are called from an HTML form, add
 </form>
 ```
 
-### License
+## Request Methods
 
-This project is under MIT License. Please see the [License File](https://github.com/AdrianoLima19/router/blob/master/LICENSE) for more information.
+### Request Properties
+
+The method `baseUrl` receives the URL path that was assigned to the router when it was instantiated, if no path was assigned, by default this method is empty:
+
+```php
+$req->baseUrl
+```
+
+The method `method` corresponds to the HTTP method of the request:
+
+```php
+// GET /user
+$req->method  // GET
+```
+
+The `format` method corresponds to the type of data sent with the request.
+
+```php
+// POST /register
+// Content-Length: 56
+// | {
+// | 	"name": "john",
+// | 	"email": "surerloki3379@gmail.com"
+// | }
+$req->format  // application/json
+```
+
+The method `uri` return the request path:
+
+```php
+// Route /table/client/{id}
+// GET   /table/client/245
+$req->uri // /table/client/245
+```
+
+### Request Data
+
+The `query` method contains all queries in the request, by default this method is an empty object:
+
+```php
+// GET /shoes?order=desc&type=converse
+$req->query->order  // desc
+$req->query->type   // converse
+```
+
+The `params` method contains all the dynamic parameters of the route, by default this method is an empty object:
+
+```php
+// Route /user/{id}
+// GET   /user/23
+$req->params->id  // 23
+```
+
+The `body` method contains all the data sent in the request body, and can be filled out using html forms, json or Xml. By default this method is an empty object:
+
+```php
+// POST /register
+// Content-Length: 56
+// | {
+// | 	"name": "john",
+// | 	"email": "surerloki3379@gmail.com"
+// | }
+$req->body->name  // "john
+$req->body->email // "surerloki3379@gmail.com"
+```
+
+The `error` method is only available within the fallback route and always has an HTTP error code:
+
+```php
+//GET /unknow
+$req->error // 404
+```
+
+## Response Methods
+
+The method `send` returns a simple string:
+
+```php
+$res->send('Hello', '<br>');
+$res->send('<span>World</span>');
+$res->send(
+    '<h4>Lorem ipsum</h4>',
+    '<br>',
+    'Lorem ipsum dolor sit amet consectetur adipisicing elit.'
+);
+```
+
+The `render` method includes the files provided in order:
+
+```php
+$res->render(
+  '/demo/header.php',
+  '/demo/nav.php',
+  '/demo/section.php',
+  '/demo/article.php',
+  '/demo/footer.php',
+);
+```
+
+The method `json` sends a JSON response:
+
+```php
+$res->json(
+  [
+    'status' => 200,
+    'message' => 'messsage test',
+    'data' => [
+      'name' => 'test'
+    ]
+  ],
+);
+```
+
+### Redirect Route
+
+If the route needs to redirect to another URI, the method `redirect` provides a convenient shortcut for performing a simple redirect:
+
+```php
+$router->get("/redirect", function ($req ,$res, $server) {
+    $server->redirect('/');
+});
+```
+
+The `route` can be used to redirect the route and customize the status code:
+
+```php
+$router->get("/redirect-to-login", function ($req ,$res, $server) {
+    $server->route('/login', 301);
+});
+```
+
+## License
+
+This project is under MIT License. Please see the [license file](https://github.com/AdrianoLima19/router/blob/master/LICENSE) for more information.

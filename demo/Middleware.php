@@ -4,13 +4,18 @@ namespace SurerLoki\Router\Demo;
 
 class Middleware
 {
-    public function before()
-    {
-        echo "<h1>Middleware Before</h1>";
-    }
-
     public function after()
     {
-        echo "<h3>Middleware After</h3>";
+        echo '<h2><span class="badge badge-secondary">Controller: Middleware after executed...</span></h2>';
+    }
+
+    public function testbefore()
+    {
+        echo 'web before';
+    }
+
+    public function testAfter()
+    {
+        echo 'web after';
     }
 }
