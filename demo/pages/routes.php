@@ -1,5 +1,6 @@
 <?php
 
+$total = 0;
 $paginator = 1;
 $count = 1;
 $page = 1;
@@ -30,34 +31,40 @@ $limit = 10;
 
                 <?php foreach ($method as $route => $value) : ?>
 
-                    <tr id="index-page">
+                    <?php $total++ ?>
 
-                        <?php if ($count <= $limit) : ?>
+                    <?php if ($count <= $limit) : ?>
 
-                            <td data-page="<?php echo $page ?>">
+                        <tr class="index-page" data-page="<?php echo $page ?>">
 
-                            <?php else : ?>
 
-                            <td data-page="<?php echo ++$page;
-                                            $count = 1;
-                                            $paginator++ ?>">
+                        <?php else : ?>
+                        <tr class="index-page" data-page="<?php echo ++$page;
+                                                            $count = 1;
+                                                            $paginator++ ?>">
 
-                            <?php endif ?>
+                        <?php endif ?>
 
-                            <?php echo $value['method'] ?? 'GET'; ?>
+                        <td><?php echo $value['method'] ?? 'GET'; ?><?php $count++; ?></td>
 
-                            <?php $count++; ?>
+                        <td><?php echo $value['route'] ?></td>
 
-                            </td>
+                        </tr>
 
-                            <td data-page="<?php echo $page; ?>">
-                                <?php echo $value['route'] ?>
-                            </td>
-                    </tr>
+                    <?php endforeach ?>
 
                 <?php endforeach ?>
 
-            <?php endforeach ?>
+                <?php
+
+                do {
+                    $total++;
+                    echo '<tr class="index-page" data-page="' . $paginator . '">
+                    <td class="hide">HIDE</td>
+                    <td class="hide">hide</td>
+                    </tr>';
+                } while ($total % 10);
+                ?>
 
         </tbody>
 
@@ -69,7 +76,7 @@ $limit = 10;
 
             <li class="page-item"><a class="page-link first-page" data-page="1">&laquo;</a></li>
             <?php for ($i = 1; $i <= $paginator; $i++) : ?>
-                <li class="page-item"><a class="page-link id-page" href="1"><?php echo $i ?> </a></li>
+                <li class="page-item"><a class="page-link id-page" href="#" data-page="<?php echo $i ?>"><?php echo $i ?> </a></li>
             <?php endfor ?>
             <li class="page-item"><a class="page-link last-page" data-page="<?php echo $paginator ?>">&raquo;</a></li>
 
@@ -79,9 +86,15 @@ $limit = 10;
 
 </div>
 
-<script src="./assets/js/jquery.min.js"></script>
 <script>
     $(document).ready(() => {
+
+        $(".hide").css({
+            'opacity': '0',
+            'border-color': 'transparent'
+        });
+
+        $('.first-page').parent().next().addClass('active')
 
         listRoutes()
     })
@@ -90,13 +103,22 @@ $limit = 10;
 
         event.preventDefault();
 
+        $(".id-page").parent().removeClass('active')
+
+        $(this).parent().next().addClass('active')
+
         listRoutes($(this).data('page'))
     })
 
     $('.last-page').click(function(event) {
 
-
         event.preventDefault();
+
+        $(".id-page").parent().removeClass('active')
+
+        $(this).parent().prev().addClass('active')
+
+        listRoutes($(this).data('page'))
 
         listRoutes($(this).data('page'))
     })
@@ -105,19 +127,43 @@ $limit = 10;
 
         event.preventDefault();
 
-        listRoutes($(this).text())
+        listRoutes($(this).data('page'))
+
+        $(".id-page").parent().removeClass('active')
+
+        $(this).parent().addClass('active')
     });
 
     function listRoutes(boot) {
 
-        $("#index-page td").each(function(index, element) {
+        $(".index-page").each(function() {
 
             boot = boot || 1
 
-            $(this).hide()
+            if (boot == 1) {
 
-            if ($(this).data('page') == boot) {
-                $(this).fadeIn(150)
+                $('.first-page').parent().addClass('disabled')
+            } else {
+
+                $('.first-page').parent().removeClass('disabled')
+            }
+
+            if (boot == $('.last-page').data('page')) {
+
+                $('.last-page').parent().addClass('disabled')
+            } else {
+
+                $('.last-page').parent().removeClass('disabled')
+            }
+
+            // if (boot == $(".id-page").data('page')) {
+            //     $(".id-page").data('page').parent().removeClass('active')
+            // }
+
+            if ($(this).data('page') != boot) {
+                $(this).hide()
+            } else {
+                $(this).show()
             }
         });
     }

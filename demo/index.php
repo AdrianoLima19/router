@@ -38,14 +38,13 @@ $router->get('/middleware', function ($req, $res) {
     )->send(
         '<div class="container text-center">',
         '<h1>Callback Route</h1>',
-        '<h3><span class="badge badge-pill badge-info">Middleware Before used</span></h3>',
-        '<h3><span class="badge badge-pill badge-info">Middleware After used</span></h3>',
+        '<h2><span class="badge badge-pill badge-info">Middleware before/after used</span></h2>',
         '</div>'
     )->render(
         '/demo/pages/footer.php'
     );
 })->after('Middleware:after')->before(function () {
-    echo '<h2><span class="badge badge-warning">Callback: middleware Before executed...</span></h2>';
+    echo '<h2><span class="badge badge-warning">Server: middleware executed before page rendering...</span></h2>';
 });
 
 $router->fallback('Web:error');

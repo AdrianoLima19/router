@@ -6,7 +6,7 @@ class Middleware
 {
     public function after()
     {
-        echo '<h2><span class="badge badge-secondary">Controller: Middleware after executed...</span></h2>';
+        echo '<h2><span class="badge badge-secondary">Controller: Middleware executed after page rendering...</span></h2>';
     }
 
     public function testbefore()

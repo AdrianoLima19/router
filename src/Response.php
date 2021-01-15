@@ -101,7 +101,7 @@ class Response
         array_map(function ($self) use ($params) {
 
             $filter = trim(filter_var($self, FILTER_SANITIZE_STRIPPED), "/\\");
-            $render = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, dirname(__DIR__) . '/' . $filter);
+            $render = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, dirname($_SERVER['DOCUMENT_ROOT']) . '/' . $filter);
 
             if (file_exists($render)) {
 

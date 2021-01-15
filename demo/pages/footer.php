@@ -49,7 +49,6 @@
     <li class="nav-item footer-links">&copy; 2020 SurerLoki3379</li>
 
 </ul>
-
 </body>
 
 </html>

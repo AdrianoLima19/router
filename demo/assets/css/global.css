@@ -1,0 +1,57 @@
+body {
+    overflow-x: hidden;
+}
+
+h1,
+h2 {
+    padding-top: 4rem;
+    text-align: center;
+}
+
+h2 {
+    padding-bottom: 2rem;
+}
+
+.list-group-item-action {
+    margin: 1rem 0;
+}
+
+.link-list {
+    margin-top: 3rem;
+    margin-bottom: 3rem;
+}
+
+.footer-links {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.route-list {
+    width: 100%;
+}
+
+.align-router {
+    text-align: center;
+}
+
+.table tr td:first-child {
+    width: 50%;
+}
+
+.form-dump {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.container-info .card {
+    margin: 1rem;
+}
+
+.container-info {
+    width: 90%;
+    margin: 2rem auto;
+}
