@@ -101,11 +101,18 @@ class Response
         array_map(function ($self) use ($params) {
 
             $filter = trim(filter_var($self, FILTER_SANITIZE_STRIPPED), "/\\");
-            $render = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, dirname($_SERVER['DOCUMENT_ROOT']) . '/' . $filter);
 
-            if (file_exists($render)) {
+            if (file_exists($filter)) {
 
-                include $render;
+                include $filter;
+            } else {
+
+                $render = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, dirname($_SERVER['DOCUMENT_ROOT']) . '/' . $filter);
+
+                if (file_exists($render)) {
+
+                    include $render;
+                }
             }
         }, $files);
 

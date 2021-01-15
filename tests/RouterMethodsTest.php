@@ -914,7 +914,7 @@ final class RouterMethodsTest extends TestCase
         $router->get('/', function ($req, $res) {
             $res->params(['req' => $req]);
             $res->render(
-                "/demo/pages/test.php"
+                dirname(__DIR__) . "\demo\pages\\test.php"
             );
         });
 
@@ -973,7 +973,7 @@ final class RouterMethodsTest extends TestCase
 
         $router->get('/', function ($req, $res) {
             $res->render(
-                "/demo/pages/test.php"
+                dirname(__DIR__) . "/demo/pages/test.php"
             );
         });
 
